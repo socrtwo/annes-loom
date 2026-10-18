@@ -213,6 +213,23 @@ describe('template parameters, optional and repeating regions', () => {
   });
 });
 
+describe('nested templates in site/templates.ts', () => {
+  it('updateAttachedPages reaches the pages of nested templates without duplicating markers', () => {
+    const parent = '<html><body><header>v1</header><!-- TemplateBeginEditable name="main" -->x<!-- TemplateEndEditable --></body></html>';
+    const site = siteWith({ 'Templates/parent.dwt': parent });
+    const child = applyTemplate(site, 'Templates/parent.dwt', '<html><body>x</body></html>', 'Templates/child.dwt')
+      .replace(/(<!-- InstanceBeginEditable name="main" -->)[\s\S]*?(<!-- InstanceEndEditable -->)/, '$1<!-- TemplateBeginEditable name="inner" -->i<!-- TemplateEndEditable -->$2');
+    site.write('Templates/child.dwt', child);
+    site.write('page.html', applyTemplate(site, 'Templates/child.dwt', '<html><body><p>mine</p></body></html>', 'page.html'));
+    expect((site.read('page.html')!.match(/InstanceBegin template=/g) || []).length).toBe(1);
+    expect(pageRegions(site.read('page.html')!).map((r) => r.name)).toEqual(['inner']);
+    site.write('Templates/parent.dwt', parent.replace('v1', 'v2'));
+    expect(updateAttachedPages(site, 'Templates/parent.dwt')).toEqual(['Templates/child.dwt', 'page.html']);
+    expect(site.read('page.html')).toContain('v2');
+    expect(site.read('page.html')).toContain('<p>mine</p>');
+  });
+});
+
 describe('region helpers', () => {
   it('renames and removes regions in templates and pages', () => {
     const renamed = renameRegion(BEGIN_TPL, 'body', 'content');

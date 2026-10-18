@@ -61,8 +61,12 @@ export function isTemplatePath(p: string): boolean { return /\.dwt$/i.test(p); }
 
 /** Builds the page for `templatePath` with the page's existing region content (by name, or by `mapping`). */
 export function applyTemplate(site: Site, templatePath: string, pageSrc: string, pagePath: string, mapping: Record<string, string> = {}): string {
-  const tsrc = site.read(templatePath);
+  let tsrc = site.read(templatePath);
   if (tsrc == null) throw new Error(`Template ${templatePath} is missing.`);
+  // A nested template carries its parent template's instance markers; to its own pages they are fixed text.
+  if (attachedTemplate(tsrc, templatePath) && /TemplateBeginEditable/i.test(tsrc)) {
+    tsrc = tsrc.replace(/<!--\s*(?:InstanceBegin\s+template="[^"]*"[^>]*?|InstanceEnd|InstanceBeginEditable\s+name="[^"]*"|InstanceEndEditable|InstanceParam\b[^>]*?)\s*-->/gi, '');
+  }
   const dialect = dialectOf(tsrc);
   const existing = new Map(pageRegions(pageSrc).map((r) => [r.name, r.content]));
   // A page that was never attached: its body becomes the main region, its title the doctitle region.
@@ -114,14 +118,17 @@ export function pagesUsing(site: Site, templatePath: string): string[] {
 }
 
 /** Re-applies a template to every page attached to it ("Update Attached Pages"). Returns the pages changed. */
-export function updateAttachedPages(site: Site, templatePath: string): string[] {
+export function updateAttachedPages(site: Site, templatePath: string, seen = new Set<string>()): string[] {
   const changed: string[] = [];
+  if (seen.has(templatePath)) return changed;
+  seen.add(templatePath);
   for (const p of pagesUsing(site, templatePath)) {
     const src = site.read(p)!;
     const out = applyTemplate(site, templatePath, src, p);
     if (out !== src) { site.write(p, out); changed.push(p); }
+    // Nested templates: a template attached to this one is itself a template; update its pages too.
+    if (isTemplatePath(p)) changed.push(...updateAttachedPages(site, p, seen));
   }
-  // Nested templates: a template attached to this one is itself a template; update its pages too.
   return changed;
 }
 

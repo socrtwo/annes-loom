@@ -1078,11 +1078,9 @@ def([
       const desc = v.desc === true || v.desc === 'desc';
       const keep = !!v.header;
       const rows = keep ? bodyRows.slice(1) : bodyRows;
-      const gs = rows.map((r) => grid.cells.filter((c) => c.el.parentElement === r));
       if (grid.cells.some((c) => rows.includes(c.el.parentElement as HTMLTableRowElement) && c.rowSpan > 1)) { toast('Rows with cells merged across rows cannot be sorted. Split those cells first.'); return; }
       const texts = rows.map((r) => (grid.cells.find((c) => c.el.parentElement === r && c.col <= col && c.col + c.colSpan > col)?.el.textContent || '').trim());
       const order = sortOrder(texts, (v.type || 'auto') as SortType, desc);
-      void gs;
       mutate(app, () => {
         const parent = rows[0]?.parentElement;
         if (!parent) return;

@@ -125,8 +125,12 @@ function setRange(app: App, table: HTMLTableElement, rect: CellRect): void {
       if (!stored || stored.table.ownerDocument !== doc) return;
       const sel = doc.getSelection();
       const n = sel?.anchorNode;
-      const el = n ? (n.nodeType === 1 ? (n as Element) : n.parentElement) : null;
-      const c = el?.closest('td,th');
+      let c: Element | null = n ? cellAtBoundary(n, sel!.anchorOffset, false) : null;
+      if (!c && n) {
+        // A selected row (the selection is around the tr element) counts as its first cell.
+        const el = n.nodeType === 1 ? (n as Element).childNodes[sel!.anchorOffset] as Element | undefined : undefined;
+        if (el?.tagName === 'TR') c = rowCells(el)[0] || null;
+      }
       const g = c && c.closest('table') === stored.table ? new TableGrid(stored.table).find(c) : null;
       const r = stored.rect;
       if (!g || g.row < r.r1 || g.row > r.r2 || g.col < r.c1 || g.col > r.c2) { stored = null; clearHighlight(doc); }

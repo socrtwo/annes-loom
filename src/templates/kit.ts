@@ -45,7 +45,7 @@ img { display: block; }
 h1, h2, h3, h4 { font-family: var(--heading-font); line-height: 1.2; margin: 0 0 .5em; text-wrap: balance; }
 h1 { font-size: clamp(2rem, 5vw, 3.1rem); }
 h2 { font-size: clamp(1.5rem, 3.2vw, 2.05rem); }
-h3 { font-size: 1.25rem; }
+h3, .h3 { font-size: 1.25rem; }
 p, ul, ol, dl, figure, table, blockquote, pre { margin: 0 0 1rem; }
 a { color: var(--accent); text-underline-offset: .15em; }
 a:hover { text-decoration-thickness: 2px; }

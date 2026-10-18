@@ -118,7 +118,7 @@ function syncAll(app: App): void {
       if (d) {
         if (!hookedFrames.has(d.frame)) { hookedFrames.add(d.frame); d.frame.addEventListener('load', () => setTimeout(() => applyExtras(app, tab), 0)); }
         const doc = d.frame.contentDocument as any;
-        if (doc?.body && (doc._qlExtVer !== flagsVersion || (flags.aidRegions && /BeginEditable/.test(tab.source)))) applyExtras(app, tab);
+        if (doc?.body && (doc._qlExtVer !== flagsVersion || (flags.aidRegions && /BeginEditable/.test(tab.source)) || flags.revealTags || flags.marks.tags)) applyExtras(app, tab);
         if (flags.liveCode && tab === app.active) liveSync(tab);
       }
     } catch (e) { console.error(e); }
@@ -203,6 +203,7 @@ export function applyExtras(app: App, tab: PageTab): void {
   // Media emulation changes the frame's style sheets; going back to normal needs a fresh load.
   const want = `${flags.media}|${flags.disableStyles}`;
   const have = doc._qlMedia || 'screen|false';
+  if (have === 'reloading') return;
   if (want !== have) {
     if (have !== 'screen|false') { doc._qlMedia = 'reloading'; void tab.ui.reloadDesign(); return; }
     emulateMedia(doc);

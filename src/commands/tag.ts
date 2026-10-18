@@ -398,10 +398,15 @@ export function expandAtCursor(cv: EditorView, path: string, strict: boolean): b
   if (start < 0) return false;
   const abbr = line.text.slice(start, col);
   const e = extOf(path);
-  if (e === 'css' || e === 'scss' || e === 'less') {
-    const css = expandCss(abbr);
-    if (!css) return false;
-    cv.dispatch({ changes: { from: line.from + start, to: s.head, insert: css }, selection: EditorSelection.cursor(line.from + start + css.length), scrollIntoView: true });
+  const markup = isPagePath(path) || /^(xml|svg|dwt|lbi|php|md)$/.test(e);
+  const css = e === 'css' || e === 'scss' || e === 'less';
+  if (!markup && !css) { if (!strict) toast('Abbreviations expand in pages and style sheets.'); return false; }
+  // With Tab, only an abbreviation at the start of a line or right after a tag expands (not words in running text).
+  if (strict && !/(^\s*|>)$/.test(line.text.slice(0, start))) return false;
+  if (css) {
+    const out = expandCss(abbr);
+    if (!out) return false;
+    cv.dispatch({ changes: { from: line.from + start, to: s.head, insert: out }, selection: EditorSelection.cursor(line.from + start + out.length), scrollIntoView: true });
     return true;
   }
   if (strict && !looksLikeAbbreviation(abbr)) return false;
@@ -545,12 +550,10 @@ function editStartTag(app: App, fn: (t: StartTag) => StartTag | null): void {
     const nt = fn(cur);
     if (!nt) return;
     const newOpen = buildStartTag({ ...nt, selfClose: cur.selfClose && nt.name.toLowerCase() === cur.name.toLowerCase() });
-    let text = ctx.text;
-    // End tag first so the start offsets stay valid.
-    if (el.closed && el.closeEnd > el.closeStart && nt.name.toLowerCase() !== cur.name.toLowerCase()) text = text.slice(0, el.closeStart) + `</${nt.name}>` + text.slice(el.closeEnd);
-    text = text.slice(0, el.openStart) + newOpen + text.slice(el.openEnd);
+    const changes = [{ from: el.openStart, to: el.openEnd, insert: newOpen }];
+    if (el.closed && el.closeEnd > el.closeStart && nt.name.toLowerCase() !== cur.name.toLowerCase()) changes.push({ from: el.closeStart, to: el.closeEnd, insert: `</${nt.name}>` });
     const v = view(app)!;
-    v.code!.view.dispatch({ changes: { from: 0, to: ctx.text.length, insert: text }, selection: EditorSelection.range(el.openStart, el.openStart + newOpen.length), scrollIntoView: true });
+    v.code!.view.dispatch({ changes, selection: EditorSelection.range(el.openStart, el.openStart + newOpen.length), scrollIntoView: true });
     v.flush();
     return;
   }
@@ -719,11 +722,10 @@ function removeTagCmd(app: App): void {
     const r = codeEnclosing(app);
     if (!r) return;
     const { el } = r;
-    let text = ctx.text;
-    if (el.closeEnd > el.closeStart) text = text.slice(0, el.closeStart) + text.slice(el.closeEnd);
-    text = text.slice(0, el.openStart) + text.slice(el.openEnd);
+    const changes = [{ from: el.openStart, to: el.openEnd, insert: '' }];
+    if (el.closeEnd > el.closeStart) changes.push({ from: el.closeStart, to: el.closeEnd, insert: '' });
     const v = view(app)!;
-    v.code!.view.dispatch({ changes: { from: 0, to: ctx.text.length, insert: text }, selection: EditorSelection.range(el.openStart, el.openStart + Math.max(0, el.closeStart - el.openEnd)), scrollIntoView: true });
+    v.code!.view.dispatch({ changes, selection: EditorSelection.range(el.openStart, el.openStart + Math.max(0, el.closeStart - el.openEnd)), scrollIntoView: true });
     v.flush();
     return;
   }

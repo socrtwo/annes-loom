@@ -132,8 +132,8 @@ export interface MapArea { shape: 'rect' | 'circle' | 'poly' | 'default'; coords
 export function parseAreas(text: string): MapArea[] {
   const out: MapArea[] = [];
   for (const line of text.split('\n')) {
-    const m = /^\s*(rect|circle|poly|default)\s+([\d.,\s]*?)\s+(\S+)\s*(.*)$/i.exec(line);
-    if (m) out.push({ shape: m[1].toLowerCase() as MapArea['shape'], coords: m[2].replace(/\s+/g, ''), href: m[3], alt: m[4].trim() || m[3] });
+    const m = /^\s*(rect|circle|poly|default)\s+((?:[\d.]+\s*,\s*)*[\d.]+)?\s*(\S+)\s*(.*)$/i.exec(line);
+    if (m) out.push({ shape: m[1].toLowerCase() as MapArea['shape'], coords: (m[2] || '').replace(/\s+/g, ''), href: m[3], alt: m[4].trim() || m[3] });
   }
   return out;
 }
@@ -430,7 +430,7 @@ export function mathMarkup(input: string, display: 'block' | 'inline' = 'block')
         i++;
         const num = out.pop()!;
         const den = post();
-        out.push({ x: `<mfrac>${wrap(num.inner ?? num.x)}${wrap(den.inner ?? den.x)}</mfrac>` });
+        out.push({ x: `<mfrac>${num.inner ?? wrap(num.x)}${den.inner ?? wrap(den.x)}</mfrac>` });
         continue;
       }
       if ([')', ']', '}'].includes(peek()!)) { i++; continue; }
@@ -707,12 +707,16 @@ export function analyticsSnippet(kind: AnalyticsKind, id: string): string {
 
 export interface NavItem { href: string; label: string; current?: boolean; children?: NavItem[] }
 
-export function linkBar(items: NavItem[], o: { orientation?: 'horizontal' | 'vertical'; label?: string; separator?: string } = {}): Component {
+/**
+ * A link bar. `mode` (children | siblings | top | breadcrumbs) marks it with data-ql-linkbar so the site
+ * regenerates its links when the navigation structure changes (site/reports.ts regenerateLinkBars).
+ */
+export function linkBar(items: NavItem[], o: { orientation?: 'horizontal' | 'vertical'; label?: string; separator?: string; mode?: string; home?: boolean; parent?: boolean } = {}): Component {
   const vert = o.orientation === 'vertical';
   const li = items.map((x) => `    <li><a href="${a(x.href)}"${x.current ? ' aria-current="page"' : ''}>${esc(x.label)}</a></li>`).join('\n');
   return {
     key: 'linkbar',
-    html: `<nav class="ql-linkbar${vert ? ' ql-linkbar-v' : ''}" aria-label="${a(o.label || 'Site')}">\n  <ul>\n${li}\n  </ul>\n</nav>`,
+    html: `<nav class="ql-linkbar${vert ? ' ql-linkbar-v' : ''}"${linkBarData(o)} aria-label="${a(o.label || 'Site')}">\n  <ul>\n${li}\n  </ul>\n</nav>`,
     css: `.ql-linkbar ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.25rem 1rem}
 .ql-linkbar-v ul{flex-direction:column}
 .ql-linkbar a{text-decoration:none;padding:.25rem 0}
@@ -721,11 +725,15 @@ export function linkBar(items: NavItem[], o: { orientation?: 'horizontal' | 'ver
   };
 }
 
-export function breadcrumbs(items: NavItem[]): Component {
+function linkBarData(o: { mode?: string; home?: boolean; parent?: boolean }): string {
+  return o.mode ? attrs({ 'data-ql-linkbar': o.mode, 'data-ql-home': o.home == null ? null : String(o.home), 'data-ql-parent': o.parent ? 'true' : null }) : '';
+}
+
+export function breadcrumbs(items: NavItem[], live = false): Component {
   const li = items.map((x, idx) => (idx === items.length - 1 ? `    <li><a href="${a(x.href)}" aria-current="page">${esc(x.label)}</a></li>` : `    <li><a href="${a(x.href)}">${esc(x.label)}</a></li>`)).join('\n');
   return {
     key: 'breadcrumbs',
-    html: `<nav class="ql-breadcrumbs" aria-label="Breadcrumb">\n  <ol>\n${li}\n  </ol>\n</nav>`,
+    html: `<nav class="ql-breadcrumbs"${live ? ' data-ql-linkbar="breadcrumbs"' : ''} aria-label="Breadcrumb">\n  <ol>\n${li}\n  </ol>\n</nav>`,
     css: `.ql-breadcrumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap}
 .ql-breadcrumbs li+li::before{content:"/";padding:0 .5em;color:#888}
 .ql-breadcrumbs a[aria-current=page]{color:inherit;text-decoration:none}`,

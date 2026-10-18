@@ -190,10 +190,10 @@ export function jsSymbols(text: string, base = 0): Sym[] {
   for (const m of clean.matchAll(/\bfunction\s*\*?\s*([A-Za-z_$][\w$]*)\s*\(/g)) out.push({ name: m[1] + '()', kind: 'function', at: base + m.index! });
   for (const m of clean.matchAll(/\b([A-Za-z_$][\w$.]*)\s*[:=]\s*(?:async\s+)?(?:function\b|\([^()]*\)\s*=>|[A-Za-z_$][\w$]*\s*=>)/g)) out.push({ name: m[1] + '()', kind: 'function', at: base + m.index! });
   for (const m of clean.matchAll(/\bclass\s+([A-Za-z_$][\w$]*)/g)) out.push({ name: m[1], kind: 'class', at: base + m.index! });
-  for (const m of clean.matchAll(/^[ \t]*(?:static\s+|async\s+|get\s+|set\s+)*([A-Za-z_$][\w$]*)\s*\([^()\n]*\)\s*\{/gm)) {
+  for (const m of clean.matchAll(/(?:^|[{};])[ \t]*(?:static\s+|async\s+|get\s+|set\s+)*([A-Za-z_$][\w$]*)\s*\([^()\n]*\)\s*\{/gm)) {
     if (JS_KEYWORDS.has(m[1])) continue;
     const at = base + m.index! + m[0].indexOf(m[1]);
-    if (!out.some((s) => Math.abs(s.at - at) < 12)) out.push({ name: m[1] + '()', kind: 'function', at });
+    if (!out.some((s) => s.name === m[1] + '()' && Math.abs(s.at - at) < 40)) out.push({ name: m[1] + '()', kind: 'function', at });
   }
   return out.sort((a, b) => a.at - b.at);
 }
@@ -691,17 +691,16 @@ const codeFocused = (app: App) => { const v = view(app); return !!v?.code && v.t
 def([
   {
     id: 'edit.undo', label: 'Undo', icon: 'undo', tab: 'Home', group: 'Undo', keys: ['Mod-z'], popular: true, noRecord: true, kind: 'split', origin: 'every editor',
-    isEnabled: (app) => !!app.active && (app.active.history.canUndo || codeFocused(app)),
     menu: (app) => { const hs = app.active?.history; if (!hs) return []; const out: MenuEntry[] = []; for (let i = hs.index, n = 1; i > 0 && n <= 20; i--, n++) out.push({ id: 'edit.undo', arg: n, label: hs.labels[i] || 'Edit' }); return out.length ? out : [{ label: 'Nothing to undo' }]; },
     run: (app, n?: number) => {
       if (codeFocused(app) && !n) { view(app)!.code!.cmd('undo'); view(app)!.flush(); return; }
+      if (!app.active) return;
       for (let i = 0; i < (typeof n === 'number' ? n : 1); i++) app.undo();
     },
   },
   {
     id: 'edit.redo', label: 'Redo', icon: 'redo', tab: 'Home', group: 'Undo', keys: ['Mod-y', 'Mod-Shift-z'], popular: true, noRecord: true, origin: 'every editor',
-    isEnabled: (app) => !!app.active && (app.active.history.canRedo || codeFocused(app)),
-    run: (app) => { if (codeFocused(app)) { view(app)!.code!.cmd('redo'); view(app)!.flush(); return; } app.redo(); },
+    run: (app) => { if (codeFocused(app)) { view(app)!.code!.cmd('redo'); view(app)!.flush(); return; } if (app.active) app.redo(); },
   },
   { id: 'edit.repeat', label: 'Repeat', icon: 'repeat', tab: 'Home', group: 'Undo', noRecord: true, origin: 'Microsoft Office', tip: 'Run the last command again', run: (app) => { const l = app.lastCommand; if (l) app.exec(l.id, l.arg); else toast('There is no command to repeat yet.'); } },
 
@@ -739,7 +738,7 @@ def([
   { id: 'edit.followLink', label: 'Follow Hyperlink', icon: 'open_in_new', tab: 'Insert', group: 'Links', noRecord: true, isEnabled: isText, origin: 'FrontPage, Expression Web', tip: 'Open the page the link points to (or Ctrl+click it in Design view)', run: (app) => followLink(app) },
   { id: 'edit.externalEditor', label: 'Edit with External Editor', icon: 'launch', tab: 'Code', group: 'Edit', noRecord: true, isEnabled: hasTab, origin: 'Dreamweaver, Expression Web', run: (app) => externalEditor(app) },
   { id: 'edit.tagLibraries', label: 'Tag Libraries…', icon: 'library_books', tab: 'Code', group: 'Assist', noRecord: true, origin: 'Dreamweaver (Tag Library Editor)', tip: 'HTML elements and their attributes', run: (app) => tagLibraries(app) },
-  { id: 'edit.tasks', label: 'Tasks', icon: 'task_alt', tab: 'Site', group: 'Team', noRecord: true, origin: 'FrontPage', run: (app) => app.exec('site.tasks') },
+  { id: 'edit.tasks', label: 'Tasks', icon: 'task_alt', tab: 'Home', group: 'Editing', noRecord: true, origin: 'FrontPage', run: (app) => app.exec('site.tasks') },
 ]);
 
 

@@ -26,7 +26,7 @@ export interface ProviderConfig {
   verified?: number;
 }
 
-export interface SavedPrompt { id: string; name: string; prompt: string; input: 'selection' | 'document' | 'none'; output: 'replace' | 'insert' | 'pane' | 'comment' | 'newdoc' }
+export interface SavedPrompt { id: string; name: string; prompt: string; input: 'selection' | 'document' | 'site' | 'none'; output: 'replace' | 'insert' | 'pane' | 'comment' | 'newdoc' }
 
 export interface AiSettings {
   enabled: boolean;

@@ -14,17 +14,17 @@ module.exports = {
   // Everything the app needs is bundled into dist/ by Vite; ship no node_modules.
   files: ['dist/**/*', 'electron/**/*', 'package.json', '!**/node_modules/**'],
   icon: 'resources/icon-1024.png',
+  // Web files open in QuillLoom from the file manager (Open With ▸ QuillLoom on every system).
   fileAssociations: [
-    { ext: 'pptx', name: 'PowerPoint Presentation', role: 'Editor', mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' },
-    { ext: 'pptm', name: 'PowerPoint Macro-Enabled Presentation', role: 'Editor', mimeType: 'application/vnd.ms-powerpoint.presentation.macroEnabled.12' },
-    { ext: 'ppsx', name: 'PowerPoint Show', role: 'Editor', mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.slideshow' },
-    { ext: 'potx', name: 'PowerPoint Template', role: 'Editor', mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.template' },
-    { ext: 'ppt', name: 'PowerPoint 97-2003 Presentation', role: 'Viewer', mimeType: 'application/vnd.ms-powerpoint' },
-    { ext: 'odp', name: 'OpenDocument Presentation', role: 'Editor', mimeType: 'application/vnd.oasis.opendocument.presentation' },
-    { ext: 'fodp', name: 'Flat OpenDocument Presentation', role: 'Editor', mimeType: 'application/vnd.oasis.opendocument.flat-presentation' },
-    { ext: 'md', name: 'Markdown Slides', role: 'Editor', mimeType: 'text/markdown' },
-    { ext: 'qsp', name: 'QuillLoom Presentation', role: 'Editor', mimeType: 'application/x-quillloom' },
-    { ext: 'qspe', name: 'Encrypted QuillLoom Presentation', role: 'Editor', mimeType: 'application/x-quillloom-encrypted' },
+    { ext: ['html', 'htm'], name: 'Web Page', role: 'Editor', mimeType: 'text/html' },
+    { ext: ['xhtml'], name: 'XHTML Page', role: 'Editor', mimeType: 'application/xhtml+xml' },
+    { ext: ['shtml'], name: 'Server-Side Include Page', role: 'Editor', mimeType: 'text/html' },
+    { ext: ['css'], name: 'Cascading Style Sheet', role: 'Editor', mimeType: 'text/css' },
+    { ext: ['js'], name: 'JavaScript File', role: 'Editor', mimeType: 'text/javascript' },
+    { ext: ['php'], name: 'PHP Page', role: 'Editor', mimeType: 'application/x-httpd-php' },
+    { ext: ['dwt'], name: 'Dynamic Web Template', role: 'Editor', mimeType: 'text/html' },
+    { ext: ['qlsite'], name: 'QuillLoom Site', role: 'Editor', mimeType: 'application/x-quillloom-site' },
+    { ext: ['mht', 'mhtml'], name: 'Web Archive', role: 'Viewer', mimeType: 'multipart/related' },
   ],
   win: {
     target: [{ target: 'nsis', arch: ['x64', 'arm64'] }, { target: 'portable', arch: ['x64'] }],
@@ -33,7 +33,7 @@ module.exports = {
   portable: { artifactName: 'QuillLoom-${version}-windows-portable.${ext}' },
   mac: {
     target: [{ target: 'dmg', arch: ['universal'] }, { target: 'zip', arch: ['universal'] }],
-    category: 'public.app-category.productivity',
+    category: 'public.app-category.developer-tools',
     extendInfo: { CFBundleDisplayName: 'QuillLoom' },
     // Ad-hoc signature: runs on Apple silicon without a paid Developer ID, but is not notarized,
     // so Gatekeeper asks once (docs/INSTALL.md). Hardened runtime would reject Electron's own signature.
@@ -43,9 +43,9 @@ module.exports = {
   },
   linux: {
     target: [{ target: 'AppImage', arch: ['x64', 'arm64', 'armv7l'] }, { target: 'deb', arch: ['x64', 'arm64', 'armv7l'] }],
-    category: 'Office;Presentation',
-    synopsis: 'Presentation app with a complete, customizable command library',
-    description: 'QuillLoom is an open-source presentation app that opens and saves PowerPoint (.pptx), OpenDocument (.odp) and Markdown slides. Every feature is a command you can put on the ribbon, the Quick Access Bar, a shortcut or a macro.',
+    category: 'Development;WebDevelopment',
+    synopsis: 'Web site editor with Design, Split and Code views',
+    description: 'QuillLoom is an open-source web site editor with Design, Split, Code and Preview views, site-wide link management, Dynamic Web Templates, FTP publishing, AI help, and import from WordPress, Weebly, Wix and web templates. Every feature is a command you can put on the ribbon, the Quick Access Bar, a shortcut or a macro.',
     maintainer: 'socrtwo <socrtwo@users.noreply.github.com>',
     executableName: 'quillloom',
     syncDesktopName: true,

@@ -141,7 +141,7 @@ export function defaultPrefs(): Prefs {
   };
 }
 
-const KEY = 'quillstage.prefs.v1';
+const KEY = 'quillloom.prefs.v1';
 
 export function loadPrefs(): Prefs {
   const d = defaultPrefs();

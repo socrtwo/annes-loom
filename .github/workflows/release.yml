@@ -1,10 +1,11 @@
 name: Release
 
-# Builds QuillLoom for every platform and publishes one GitHub release:
+# Builds QuillLoom for every platform it supports and publishes one GitHub release:
 #   Web (zip + installable PWA)        Windows (installer x64/arm64, portable x64)
 #   macOS (universal .dmg/.zip)        Linux x64/arm64/armv7l (AppImage, .deb): desktop Linux,
-#   iOS (unsigned .ipa)                Raspberry Pi OS (arm64, armhf) and ChromeOS (Linux apps)
-#   Android (APK, AAB)                 ChromeOS can also run the APK or install the web app.
+#                                      Raspberry Pi OS (arm64, armhf) and ChromeOS (Linux apps)
+# Android and iOS packaging is not set up yet (there are no android/ or ios/ projects); on phones
+# and tablets, install the web app from the browser.
 # Run it from the Actions tab (any branch: published as a prerelease v<version>-build.<run>),
 # push a tag v<version>, or push a commit whose message contains [release] (prerelease).
 # The last option exists for environments that may push branches but not tags.
@@ -79,6 +80,7 @@ jobs:
         run: |
           node --check build/desktop-app/electron/main.cjs
           node --check build/desktop-app/electron/preload.cjs
+          node --check build/desktop-app/electron/ftp.cjs
           test -f build/desktop-app/dist/index.html
       - name: Package
         shell: bash
@@ -96,46 +98,9 @@ jobs:
             release/*.deb
           if-no-files-found: error
 
-  ios:
-    name: iOS (unsigned)
-    needs: web
-    runs-on: macos-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22, cache: npm }
-      - run: npm ci
-      - run: npm run build
-      - run: npx cap sync ios
-      - name: Build
-        run: |
-          V='${{ needs.web.outputs.version }}'
-          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release \
-            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/ios \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-            MARKETING_VERSION="$V" CURRENT_PROJECT_VERSION="${{ github.run_number }}" build
-          mkdir -p out/Payload
-          cp -R build/ios/Build/Products/Release-iphoneos/App.app out/Payload/
-          (cd out && zip -qry "QuillLoom-$V-ios-unsigned.ipa" Payload && rm -rf Payload)
-      - uses: actions/upload-artifact@v4
-        with:
-          name: QuillLoom-ios
-          path: out/*.ipa
-          if-no-files-found: error
-
-  android:
-    name: Android
-    needs: web
-    uses: ./.github/workflows/android.yml
-    with:
-      prerelease: false
-    permissions:
-      contents: write
-
   publish:
     name: Publish release
-    needs: [web, desktop, ios, android]
+    needs: [web, desktop]
     # Publish whatever built, as long as the tested web build did; the notes list any failures.
     if: ${{ !cancelled() && needs.web.result == 'success' }}
     runs-on: ubuntu-latest
@@ -151,6 +116,8 @@ jobs:
         run: |
           cd out
           ls -la
+          # electron-builder also writes latest*.yml and blockmaps; only the downloads are released.
+          rm -f latest*.yml *.blockmap
           sha256sum QuillLoom-* > SHA256SUMS.txt
       - id: meta
         run: |
@@ -164,7 +131,7 @@ jobs:
           else PRE=true; fi
           echo "prerelease=$PRE" >> "$GITHUB_OUTPUT"
           FAILED=""
-          for j in "desktop:${{ needs.desktop.result }}" "ios:${{ needs.ios.result }}" "android:${{ needs.android.result }}"; do
+          for j in "desktop:${{ needs.desktop.result }}"; do
             [[ "${j#*:}" == success ]] || FAILED="$FAILED ${j%%:*}"
           done
           echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
@@ -185,9 +152,8 @@ jobs:
             | macOS 11+ (Apple silicon and Intel) | `*-mac-universal.dmg` (unsigned: right-click ▸ Open the first time) |
             | Linux | `*-linux-x86_64.AppImage` or `*-linux-amd64.deb` |
             | Raspberry Pi OS | 64-bit: `*-linux-arm64.deb` / `*-linux-arm64.AppImage`; 32-bit: `*-linux-armv7l.deb` |
-            | ChromeOS | the Android `.apk`, the Linux `.deb` (Linux development environment), or install the web app from the browser |
-            | Android 7+ | `*.apk` (sideload) or `*.aab` (Play Console) |
-            | iOS / iPadOS 15+ | `*-ios-unsigned.ipa`: must be signed with your own Apple ID (e.g. Sideloadly, AltStore) |
+            | ChromeOS | the Linux `.deb` (Linux development environment), or install the web app from the browser |
+            | Android, iOS / iPadOS | no native package yet: install the web app from the browser (Add to Home Screen) |
             | Web | `*-web.zip`: put the files on any static web server (HTTPS for offline use and installing) |
 
             ${{ steps.meta.outputs.failed && format('**Not in this release (build failed):**{0}', steps.meta.outputs.failed) || '' }}

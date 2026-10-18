@@ -1,0 +1,52 @@
+name: CI
+
+# Checks every push and pull request: type check, unit tests, the desktop FTP client tests, the web
+# build, and a browser smoke test of the built app. The built web app is kept as an artifact.
+# Releases are built by release.yml.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # The Electron binary is only needed by the desktop packaging jobs in release.yml.
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - name: Desktop FTP client tests
+        run: node --test tests/e2e/desktop-ftp.test.mjs
+      - name: Check the Electron scripts
+        run: |
+          node --check electron/main.cjs
+          node --check electron/preload.cjs
+          node --check electron/ftp.cjs
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QuillLoom-web-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Install Chromium for the smoke test
+        run: npx playwright install --with-deps chromium
+      - name: Browser smoke test
+        run: npm run e2e

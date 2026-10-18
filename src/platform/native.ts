@@ -52,7 +52,7 @@ interface DesktopBridge extends QuillNativePlugin {
   platform: string;
   openExternal(opts: { url: string }): Promise<void>;
   /** HTTP from the main process (no CORS), for AI providers that block browsers. */
-  http(opts: { url: string; method: string; headers: Record<string, string>; data?: unknown }): Promise<{ status: number; text: string }>;
+  http(opts: { url: string; method: string; headers: Record<string, string>; data?: unknown; binary?: boolean }): Promise<{ status: number; text: string; data?: string; contentType?: string; headers?: Record<string, string> }>;
   /** Write the document to a temporary file and open it with the program registered for its type. */
   openWith?(opts: { name: string; data: string }): Promise<{ ok: boolean; error?: string }>;
 }
@@ -66,7 +66,7 @@ export interface DesktopFolders {
   /** Serves a preview page from its own origin (the app's content security policy does not apply there). */
   setPreview(opts: { id: string; html: string }): Promise<{ url: string }>;
   /** Uploads files over FTP or FTPS. */
-  ftp(opts: { host: string; port?: number; user: string; password: string; secure?: boolean; dir?: string; files: { path: string; data: string }[]; remove?: string[] }): Promise<{ ok: boolean; log: string[] }>;
+  ftp(opts: { host: string; port?: number; user: string; password: string; secure?: boolean; dir?: string; files: { path: string; data: string }[]; remove?: string[] }): Promise<{ ok: boolean; log: string[]; uploaded?: number; removed?: number; failed?: string[] }>;
 }
 
 const desktop: DesktopBridge | undefined = typeof window !== 'undefined' ? (window as any).quillDesktop : undefined;
@@ -82,7 +82,7 @@ export const isIOS = (): boolean => Capacitor.getPlatform() === 'ios';
 /** 'android' | 'ios' | 'web' | 'windows' | 'macos' | 'linux' */
 export const platformName = (): string => (desktop ? ({ win32: 'windows', darwin: 'macos' } as Record<string, string>)[desktop.platform] || 'linux' : Capacitor.getPlatform());
 /** Desktop HTTP without CORS, or null when not on desktop. */
-export const desktopHttp = desktop ? (o: { url: string; method: string; headers: Record<string, string>; data?: unknown }) => desktop.http(o) : null;
+export const desktopHttp = desktop ? (o: { url: string; method: string; headers: Record<string, string>; data?: unknown; binary?: boolean }) => desktop.http(o) : null;
 
 // iOS: files live in the app's Documents folder, which the Files app shows.
 const IOS_PREFIX = 'ios-doc:';

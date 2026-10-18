@@ -1,0 +1,198 @@
+/**
+ * Quill suite scroll cues (see scrollcue.css). Framework-free; one instance per page.
+ *
+ *   import { installScrollCues } from './scrollcue';
+ *   installScrollCues({ selector: '.menu, .dialog-body, .list', label: 'More' });
+ *
+ * Every element matching `selector` gets the .sc-scroll class (thin bar + edge shadows). While such an
+ * element is visible and can scroll further down, a "More" chip floats at its bottom edge; activating it
+ * scrolls by most of a page. The chip lives in <body> (position: fixed), so container layouts are never
+ * changed; for a container inside a modal <dialog> or an open popover the chip lives in that element
+ * instead, because anything outside the top layer is drawn under it and made inert. Containers are
+ * found again whenever the DOM changes.
+ *
+ * A container whose bottom edge is hidden inside another scrolling container (a list inside a dialog
+ * body, say) shows no chip of its own until that edge is scrolled into view: the outer container's chip
+ * already says "more below", and two chips would stack. Chips also stay above the on-screen keyboard
+ * (visualViewport) and below anything that covers the container (they take its stacking level).
+ */
+const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 8.6 12 13.2l4.6-4.6L18 10l-6 6-6-6z"/></svg>';
+
+export interface ScrollCueOptions {
+  /** CSS selector of the scroll containers to decorate (default `[data-scrollcue]`). */
+  selector?: string;
+  /** Chip text (default "More"). */
+  label?: string;
+  /** Containers shorter than this (px) get shadows but no chip (default 64). */
+  minHeight?: number;
+}
+
+export interface ScrollCues {
+  /** Re-scan and re-place the chips now (on the next animation frame). */
+  refresh(): void;
+  /** Remove the chips and listeners; decorated containers keep their thin bars and shadows. */
+  destroy(): void;
+}
+
+export function installScrollCues(opts: ScrollCueOptions = {}): ScrollCues {
+  const selector = opts.selector || '[data-scrollcue]';
+  const label = opts.label || 'More';
+  const minHeight = opts.minHeight ?? 64;
+  const tracked = new Set<HTMLElement>();
+  const chips = new Map<HTMLElement, HTMLButtonElement>(); // container -> chip, created on first need
+  let queued = false;
+
+  // Only a container that can actually scroll (overflow-y auto/scroll) gets a chip: an element with
+  // overflow hidden or visible may report a larger scrollHeight, but scrolling it does nothing.
+  const scrollable = (el: HTMLElement) => el.scrollHeight - el.clientHeight > 6 && /(auto|scroll|overlay)/.test(getComputedStyle(el).overflowY);
+  const atBottom = (el: HTMLElement) => el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+  const visible = (el: HTMLElement) => el.isConnected && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+  const scrolls = (st: CSSStyleDeclaration) => /(auto|scroll|overlay)/.test(st.overflowY);
+
+  function chipFor(el: HTMLElement): HTMLButtonElement {
+    let chip = chips.get(el);
+    if (chip) return chip;
+    chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'sc-chip sc-hidden';
+    chip.tabIndex = -1; // keyboard users scroll with the keys; the chip is a pointer/touch affordance
+    chip.setAttribute('aria-hidden', 'true');
+    chip.innerHTML = `${ARROW}<span></span>`;
+    chip.lastElementChild!.textContent = label;
+    // Keep menus and dialogs open: the chip is not "outside" them.
+    for (const ev of ['mousedown', 'pointerdown', 'touchstart']) chip.addEventListener(ev, (e) => e.stopPropagation(), { passive: ev === 'touchstart' });
+    chip.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      el.scrollBy({ top: Math.max(40, el.clientHeight * 0.8), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+    document.body.appendChild(chip);
+    chips.set(el, chip);
+    return chip;
+  }
+
+  /** The top-layer element (modal dialog, open popover) that contains el, else <body>. */
+  function hostFor(el: HTMLElement): Element {
+    try { return el.closest('dialog:modal, :popover-open') || document.body; } catch { /* older engines */ }
+    try { return el.closest('dialog[open]') || document.body; } catch { return document.body; }
+  }
+
+  /** Visible part of el after clipping by overflow ancestors and the visual viewport; `cut` is true when a
+   *  scrolling ancestor hides el's bottom edge. */
+  function visibleBox(el: HTMLElement): { top: number; bottom: number; left: number; right: number; cut: boolean } {
+    const r = el.getBoundingClientRect();
+    let top = r.top, bottom = r.bottom, left = r.left, right = r.right, cut = false;
+    for (let n: HTMLElement = el; n.parentElement && n !== document.body; n = n.parentElement) {
+      if (getComputedStyle(n).position === 'fixed') break; // fixed boxes escape their ancestors' clipping
+      const a = n.parentElement;
+      const st = getComputedStyle(a);
+      if (st.overflowY === 'visible') continue;
+      const ar = a.getBoundingClientRect();
+      const ab = ar.top + a.clientTop + a.clientHeight;
+      if (bottom > ab + 1 && scrolls(st)) cut = true;
+      top = Math.max(top, ar.top + a.clientTop);
+      bottom = Math.min(bottom, ab);
+      if (st.overflowX !== 'visible') { left = Math.max(left, ar.left + a.clientLeft); right = Math.min(right, ar.left + a.clientLeft + a.clientWidth); }
+    }
+    const vv = window.visualViewport;
+    const vb = vv ? Math.min(innerHeight, vv.offsetTop + vv.height) : innerHeight;
+    return { top: Math.max(top, 0), bottom: Math.min(bottom, vb), left: Math.max(left, 0), right: Math.min(right, innerWidth), cut };
+  }
+
+  function place(el: HTMLElement): void {
+    let show = visible(el) && scrollable(el) && !atBottom(el);
+    let box: ReturnType<typeof visibleBox> | null = null;
+    if (show) {
+      box = visibleBox(el);
+      show = !box.cut && box.bottom - box.top >= minHeight && box.right > box.left;
+    }
+    const existing = chips.get(el);
+    if (!show) { existing?.classList.add('sc-hidden'); return; }
+    const chip = existing || chipFor(el);
+    const host = hostFor(el);
+    if (chip.parentNode !== host) host.appendChild(chip);
+    const { left, right } = box!;
+    chip.classList.remove('sc-hidden');
+    // A narrow container (a side rail of icons) gets the arrow alone; the chip never sticks out of it.
+    chip.classList.remove('sc-compact');
+    if (chip.offsetWidth > right - left - 8) chip.classList.add('sc-compact');
+    const half = chip.offsetWidth / 2, mid = (left + right) / 2;
+    const lo = left + half + 2, hi = right - half - 2;
+    chip.style.left = `${Math.round(lo > hi ? mid : Math.min(hi, Math.max(lo, mid)))}px`;
+    chip.style.top = `${Math.round(box!.bottom - 8 - chip.offsetHeight)}px`;
+    // Stacking: just above the container's own stacking level, so whatever covers the container covers the chip.
+    chip.style.zIndex = String(Math.max(1, zOf(el) + 1));
+  }
+
+  function zOf(el: HTMLElement): number {
+    let z = 0;
+    for (let n: HTMLElement | null = el; n && n !== document.body; n = n.parentElement) {
+      const v = parseInt(getComputedStyle(n).zIndex, 10);
+      if (!Number.isNaN(v)) z = Math.max(z, v);
+    }
+    return z;
+  }
+
+  function scan(): void {
+    queued = false;
+    const found = new Set(document.querySelectorAll<HTMLElement>(selector));
+    for (const el of found) {
+      if (!tracked.has(el)) {
+        tracked.add(el);
+        el.classList.add('sc-scroll');
+        el.addEventListener('scroll', schedule, { passive: true });
+        resize.observe(el);
+      }
+      place(el);
+    }
+    for (const el of [...tracked]) {
+      if (found.has(el) && el.isConnected) continue;
+      tracked.delete(el);
+      el.removeEventListener('scroll', schedule);
+      resize.unobserve(el);
+      chips.get(el)?.remove();
+      chips.delete(el);
+    }
+  }
+  function schedule(): void { if (!queued) { queued = true; requestAnimationFrame(scan); } }
+
+  const resize = new ResizeObserver(schedule);
+  // Ignore the chips' own position/visibility updates, or every placement would schedule another.
+  const isChip = (n: Node) => n instanceof Element && n.classList.contains('sc-chip');
+  const relevant = (m: MutationRecord) => (m.type === 'attributes' ? !isChip(m.target) : [...m.addedNodes, ...m.removedNodes].some((n) => !isChip(n)));
+  const mo = new MutationObserver((list) => { if (list.some(relevant)) schedule(); });
+  mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden', 'open'] });
+  // A scrolling ancestor moves its containers (and their chips); unrelated scrollers (a big canvas or grid)
+  // are ignored so that scrolling them costs nothing.
+  const onScroll = (e: Event) => {
+    const t = e.target;
+    if (!(t instanceof Element) || t === document.documentElement) { schedule(); return; }
+    for (const el of chips.keys()) if (t.contains(el)) { schedule(); return; }
+  };
+  // Wider-looking thumb while dragging it (desktop).
+  const onDown = (e: PointerEvent) => {
+    const el = e.target instanceof Element ? e.target.closest('.sc-scroll') : null;
+    if (!el) return;
+    el.classList.add('sc-dragging');
+    const up = () => { el.classList.remove('sc-dragging'); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); };
+    addEventListener('pointerup', up);
+    addEventListener('pointercancel', up);
+  };
+  addEventListener('resize', schedule, { passive: true });
+  window.visualViewport?.addEventListener('resize', schedule, { passive: true });
+  addEventListener('scroll', onScroll, { passive: true, capture: true });
+  addEventListener('pointerdown', onDown, { capture: true });
+  schedule();
+  return {
+    refresh: schedule,
+    destroy() {
+      mo.disconnect(); resize.disconnect();
+      removeEventListener('resize', schedule);
+      window.visualViewport?.removeEventListener('resize', schedule);
+      removeEventListener('scroll', onScroll, { capture: true });
+      removeEventListener('pointerdown', onDown, { capture: true });
+      for (const el of tracked) el.removeEventListener('scroll', schedule);
+      for (const chip of chips.values()) chip.remove();
+      chips.clear(); tracked.clear();
+    },
+  };
+}

@@ -1,0 +1,51 @@
+{
+  "name": "quillloom",
+  "version": "0.1.0",
+  "private": true,
+  "description": "QuillLoom: an original open-source web site editor (WYSIWYG + code) with a complete, customizable command library, AI, and WordPress, Weebly, Wix and template import.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/gen-notices.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "e2e": "node tests/e2e/smoke.mjs",
+    "catalog": "vite-node scripts/gen-catalog.ts",
+    "notices": "node scripts/gen-notices.mjs",
+    "desktop": "npm run build && node scripts/prepare-desktop.mjs && electron build/desktop-app",
+    "desktop:dist": "npm run build && node scripts/prepare-desktop.mjs && electron-builder --config electron-builder.config.cjs"
+  },
+  "dependencies": {
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3",
+    "@codemirror/autocomplete": "^6.18.0",
+    "@codemirror/commands": "^6.8.0",
+    "@codemirror/lang-css": "^6.3.0",
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-php": "^6.0.1",
+    "@codemirror/lang-xml": "^6.1.0",
+    "@codemirror/language": "^6.10.0",
+    "@codemirror/search": "^6.5.6",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.0",
+    "codemirror": "^6.0.1",
+    "jszip": "^3.10.2",
+    "material-symbols": "^0.48.0"
+  },
+  "devDependencies": {
+    "electron": "^43.7.7",
+    "electron-builder": "^26.17.0",
+    "jsdom": "^29.1.1",
+    "playwright": "^1.64.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.4",
+    "vite-node": "^6.0.0",
+    "vitest": "^5.0.5"
+  }
+}

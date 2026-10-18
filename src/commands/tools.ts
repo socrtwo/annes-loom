@@ -605,7 +605,7 @@ async function jsConsole(app: App): Promise<void> {
   run();
   await openDialog({ title: 'JavaScript Console', content, wide: true, ok: false, cancel: 'Close', buttons: [{ label: 'Reload Page', primary: true, onClick: () => run() }, { label: 'Clear', onClick: () => clear(out) }] });
   window.removeEventListener('message', onMsg);
-  frame?.remove();
+  (frame as HTMLIFrameElement | null)?.remove();
 }
 
 // --------------------------------------------------------------------------------------------
@@ -852,12 +852,12 @@ def([
 
   { id: 'tools.compareFiles', label: 'Compare Files', icon: 'difference', tab: 'Check', group: 'Compare', origin: 'Dreamweaver Compare Files, Expression Web Compare', keywords: 'diff differences two files lines', tip: 'Show the line differences between two site files.', noRecord: true, run: (app, arg) => compareFiles(app, arg) },
 
-  { id: 'tools.imageOptimize', label: 'Optimize Picture', icon: 'photo_size_select_large', tab: 'Picture', group: 'Web', edits: true, origin: 'Dreamweaver Optimize Image', keywords: 'compress image jpeg quality size', run: (app) => app.exec('picture.optimize') },
-  { id: 'tools.autoThumbnail', label: 'Auto Thumbnail', icon: 'photo_size_select_small', tab: 'Picture', group: 'Web', edits: true, origin: 'FrontPage Auto Thumbnail', keywords: 'thumbnail small picture link', run: (app) => app.exec('picture.autoThumbnail') },
-  { id: 'tools.photoAlbum', label: 'Photo Album', icon: 'photo_library', tab: 'Insert', group: 'Pictures & Media', edits: true, origin: 'Dreamweaver Create Web Photo Album, FrontPage Photo Gallery', keywords: 'gallery photos album', run: (app) => app.exec('insert.photoGallery') },
-  { id: 'tools.snippetsManager', label: 'Snippets', icon: 'content_paste_go', tab: 'Code', group: 'Assist', origin: 'Dreamweaver Snippets panel, HomeSite Snippets', keywords: 'code snippets library reuse', noRecord: true, run: (app) => app.ui.togglePane('snippets') },
-  { id: 'tools.charMap', label: 'Character Map', icon: 'emoji_symbols', tab: 'Insert', group: 'Text', edits: true, origin: 'HomeSite Special Characters, Windows Character Map', keywords: 'symbol special character entity', run: (app) => app.exec('insert.symbol') },
-  { id: 'tools.emmet', label: 'Expand Abbreviation', icon: 'bolt', tab: 'Code', group: 'Assist', edits: true, origin: 'Dreamweaver Emmet, HomeSite tag shortcuts', keywords: 'emmet zen coding abbreviation expand', run: (app) => app.exec('code.emmet') },
+  { id: 'tools.imageOptimize', label: 'Optimize Picture', icon: 'photo_size_select_large', tab: 'Picture', group: 'Tools', edits: true, origin: 'Dreamweaver Optimize Image', keywords: 'compress image jpeg quality size', run: (app) => app.exec('picture.optimize') },
+  { id: 'tools.autoThumbnail', label: 'Auto Thumbnail', icon: 'photo_size_select_small', tab: 'Picture', group: 'Tools', edits: true, origin: 'FrontPage Auto Thumbnail', keywords: 'thumbnail small picture link', run: (app) => app.exec('picture.autoThumbnail') },
+  { id: 'tools.photoAlbum', label: 'Photo Album', icon: 'photo_library', tab: 'Insert', group: 'Tools', edits: true, origin: 'Dreamweaver Create Web Photo Album, FrontPage Photo Gallery', keywords: 'gallery photos album', run: (app) => app.exec('insert.photoGallery') },
+  { id: 'tools.snippetsManager', label: 'Snippets', icon: 'content_paste_go', tab: 'Code', group: 'Tools', origin: 'Dreamweaver Snippets panel, HomeSite Snippets', keywords: 'code snippets library reuse', noRecord: true, run: (app) => app.ui.togglePane('snippets') },
+  { id: 'tools.charMap', label: 'Character Map', icon: 'emoji_symbols', tab: 'Insert', group: 'Tools', edits: true, origin: 'HomeSite Special Characters, Windows Character Map', keywords: 'symbol special character entity', run: (app) => app.exec('insert.symbol') },
+  { id: 'tools.emmet', label: 'Expand Abbreviation', icon: 'bolt', tab: 'Code', group: 'Tools', edits: true, origin: 'Dreamweaver Emmet, HomeSite tag shortcuts', keywords: 'emmet zen coding abbreviation expand', run: (app) => app.exec('code.emmet') },
   { id: 'tools.colorPicker', label: 'Color Picker', icon: 'colorize', tab: 'Code', group: 'Assist', edits: true, origin: 'HomeSite Color Palette, Dreamweaver color picker', keywords: 'color hex rgb hsl eyedropper', tip: 'Pick a color and insert its code at the cursor.', run: (app) => colorPicker(app) },
   { id: 'tools.loremIpsum', label: 'Placeholder Text', icon: 'notes', tab: 'Code', group: 'Assist', edits: true, origin: 'Dreamweaver Lorem Ipsum, Expression Web', keywords: 'lorem ipsum dummy filler text', run: (app, arg) => loremIpsum(app, arg) },
   { id: 'tools.calculator', label: 'Calculator', icon: 'calculate', tab: 'Code', group: 'Assist', origin: 'HomeSite, KompoZer', keywords: 'math arithmetic compute pixels', noRecord: true, run: (app) => calculator(app) },

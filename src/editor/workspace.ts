@@ -248,6 +248,8 @@ export class PageView {
   /** The file changed through the site (another tab, a command on several files, a rename). */
   externalChange(): void {
     if (this.suppressExternal) return;
+    // Record the outside change so Undo in this tab steps back over it instead of skipping it.
+    if (this.app.site.has(this.tab.path)) this.tab.history.push(this.tab.source, 'Change Outside This Tab');
     if (this.code && this.code.text !== this.tab.source) this.code.setText(this.tab.source);
     this.code?.setLanguage(this.tab.path);
     this.designStale = true;

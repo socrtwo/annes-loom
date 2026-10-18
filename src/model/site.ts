@@ -232,7 +232,7 @@ const ATTR_RE = /(\s(?:href|src|action|poster|data|background|longdesc|cite|usem
 const SRCSET_RE = /(\ssrcset\s*=\s*)(["'])([^"']*)\2/gi;
 const CSS_URL_RE = /(url\(\s*)(["']?)([^"')]+)\2(\s*\))/gi;
 const CSS_IMPORT_RE = /(@import\s+)(["'])([^"']+)\2/gi;
-const TPL_RE = /(<!--\s*(?:#BeginTemplate|InstanceBegin\s+template|#include\s+(?:virtual|file))\s*=?\s*)(["'])([^"']+)\2/gi;
+const TPL_RE = /(<!--\s*(?:#BeginTemplate|#BeginLibraryItem|InstanceBegin\s+template|#include\s+(?:virtual|file))\s*=?\s*)(["'])([^"']+)\2/gi;
 
 /**
  * Calls `map` for every in-site link of a page or style sheet. When it returns a string, the link

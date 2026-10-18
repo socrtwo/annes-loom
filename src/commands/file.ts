@@ -18,6 +18,7 @@ import {
 } from '../model/html';
 import { readZip, siteFromFiles, zipSite, qlsiteBlob, readQlsite, canPickFolder, openFolder, chooseSaveFolder, writeToFolder, deleteFromFolder, SKIP_RE } from '../site/io';
 import { applyTemplate, pageToTemplate, pageRegions, templateRegions, isTemplatePath, attachedTemplate } from '../site/templates';
+import { applyTemplateFull } from './template';
 import { detectArchive, siteFromArchive } from '../io/archive';
 import { isWxr, wxrToSite } from '../io/wxr';
 import { isMhtml, parseMhtml } from '../io/mhtml';
@@ -896,7 +897,7 @@ async function newFromDwt(app: App, arg?: string): Promise<void> {
     tpl = r.tpl; name = normalizePath(r.name || '');
   }
   const path = name && !site.has(name) ? (extOf(name) ? name : `${name}.${app.prefs.defaultExtension || 'html'}`) : site.freeName('', 'untitled', app.prefs.defaultExtension || 'html');
-  const src = applyTemplate(site, tpl, newPageText(app, 'Untitled'), path);
+  const src = applyTemplateFull(site, tpl, newPageText(app, 'Untitled'), path);
   site.data.templates[path] = tpl;
   site.write(path, src);
   const tab = app.openFile(path);
@@ -1642,7 +1643,7 @@ async function importXml(app: App): Promise<void> {
   }
   const page = site.freeName('', stripExt(f.name) || 'untitled', app.prefs.defaultExtension || 'html');
   const fake = data.items.map((it) => `<!-- InstanceBeginEditable name="${it.name.replace(/"/g, '')}" -->${it.content}<!-- InstanceEndEditable -->`).join('\n');
-  const src = applyTemplate(site, tpl, fake, page);
+  const src = applyTemplateFull(site, tpl, fake, page);
   site.data.templates[page] = tpl;
   site.write(page, src);
   app.openFile(page);

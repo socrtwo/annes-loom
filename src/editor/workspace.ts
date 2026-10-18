@@ -109,6 +109,8 @@ export class PageView {
   // Layout
 
   layout(): void {
+    // A frameset page has no body to edit visually (its <body> lives inside <noframes>).
+    if (this.design && (this.tab.view === 'design' || this.tab.view === 'split') && /<frameset\b/i.test(this.tab.source)) this.tab.view = 'code';
     const v = this.tab.view;
     this.el.dataset.view = v;
     this.el.classList.toggle('ql-split-vertical', this.app.prefs.splitVertical);

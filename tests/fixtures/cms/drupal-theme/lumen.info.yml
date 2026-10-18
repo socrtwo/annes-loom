@@ -1,0 +1,14 @@
+name: Lumen
+type: theme
+description: 'A tiny Drupal theme for tests.'
+core_version_requirement: ^10
+base theme: false
+libraries:
+  - lumen/global
+  - core/drupal
+regions:
+  header: Header
+  primary_menu: 'Primary menu'
+  content: Content
+  sidebar: Sidebar
+  footer: Footer

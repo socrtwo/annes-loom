@@ -674,6 +674,13 @@ function transformStyles(app: App, label: string, fn: (css: string, path: string
   else if (!changed) toast('Nothing to change.');
 }
 
+/** Removes the common indentation of CSS taken out of an indented <style> block. */
+export function dedent(css: string): string {
+  const lines = css.replace(/^\s*\n/, '').replace(/\s+$/, '').split('\n');
+  const ind = Math.min(...lines.filter((l) => l.trim()).map((l) => /^[ \t]*/.exec(l)![0].length));
+  return lines.map((l) => l.slice(Math.min(ind, /^[ \t]*/.exec(l)![0].length))).join('\n');
+}
+
 function indentBlock(css: string, srcAround: string): string {
   const ind = /\n([ \t]*)<\/style/i.exec(srcAround)?.[1] ?? '  ';
   return '\n' + css.trim().split('\n').map((l) => (l ? ind + '  ' + l : l)).join('\n') + '\n' + ind;
@@ -914,7 +921,7 @@ def([
       const path = await promptDialog('Export Page Styles', 'New style sheet file', app.site.freeName('css', stripExt(baseName(page)) || 'styles', 'css'));
       if (!path) return;
       const target = normalizeCssPath(path);
-      const css = blocks.map((b) => C.rebaseCssUrls(b.css.trim(), page, target)).join('\n\n') + '\n';
+      const css = blocks.map((b) => C.rebaseCssUrls(dedent(b.css), page, target)).join('\n\n') + '\n';
       app.active.ui.flush();
       const existing = app.site.has(target) ? fileText(app, target) : '';
       writeFile(app, target, existing ? existing.replace(/\s*$/, '\n\n') + css : css, 'Export Page Styles');

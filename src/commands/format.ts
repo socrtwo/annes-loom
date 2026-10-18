@@ -344,12 +344,49 @@ function selectionLines(app: App): string[] {
 
 const escText = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+/** The block elements the selection covers (siblings from the start block to the end block). */
+function selectedBlocks(app: App): HTMLElement[] {
+  const d = view(app)?.design;
+  const r = d?.restoreRange();
+  const one = blockEl(app);
+  if (!d?.doc || !r) return one && one !== d?.doc?.body ? [one] : [];
+  const blockOf = (n: Node) => (n.nodeType === 1 ? n as Element : n.parentElement)?.closest('p,h1,h2,h3,h4,h5,h6,pre,address,div,blockquote') as HTMLElement | null;
+  const a = blockOf(r.startContainer), b = blockOf(r.endContainer);
+  if (a && b && a !== b && a.parentElement === b.parentElement) {
+    const out: HTMLElement[] = [];
+    for (let n: Element | null = a; n; n = n.nextElementSibling) { out.push(n as HTMLElement); if (n === b) break; }
+    return out;
+  }
+  const blk = a || one;
+  return blk && blk !== d.doc.body ? [blk] : [];
+}
+
 function makeList(app: App, ordered: boolean): void {
   const v = view(app);
   if (!v) return;
-  if (v.target === 'design' && v.design?.doc) { v.design.exec(ordered ? 'insertOrderedList' : 'insertUnorderedList'); v.flush(); return; }
-  const lines = selectionLines(app);
   const tag = ordered ? 'ol' : 'ul';
+  if (v.target === 'design' && v.design?.doc) {
+    const list = closestSel(app, 'ul,ol');
+    if (list) {
+      if (list.tagName.toLowerCase() === tag) { listNone(app); return; }
+      mutate(app, () => { const n = renameElement(list, tag); v.design!.select(n); });
+      return;
+    }
+    const blocks = selectedBlocks(app).filter((b) => !/^(BODY|TD|TH|LI)$/.test(b.tagName));
+    if (!blocks.length) { v.design.exec(ordered ? 'insertOrderedList' : 'insertUnorderedList'); v.flush(); return; }
+    mutate(app, (doc) => {
+      const l = doc.createElement(tag);
+      blocks[0].before(l);
+      for (const b of blocks) {
+        const li = doc.createElement('li');
+        if (/^(P|DIV)$/.test(b.tagName) && !b.attributes.length) { while (b.firstChild) li.appendChild(b.firstChild); b.remove(); } else li.appendChild(b);
+        l.appendChild(li);
+      }
+      v.design!.select(l.lastElementChild, { contents: true });
+    });
+    return;
+  }
+  const lines = selectionLines(app);
   insertHtml(app, `<${tag}>\n${(lines.length ? lines : ['']).map((l) => `  <li>${/</.test(l) ? l : escText(l)}</li>`).join('\n')}\n</${tag}>`);
 }
 
@@ -425,8 +462,7 @@ async function listDialog(app: App): Promise<void> {
   });
   if (!v) return;
   if (!list) {
-    view(app)!.design!.exec(v.kind === 'ol' ? 'insertOrderedList' : 'insertUnorderedList');
-    view(app)!.flush();
+    makeList(app, v.kind === 'ol');
     list = closestSel(app, 'ul,ol');
     if (!list) return;
   }

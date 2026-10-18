@@ -92,6 +92,7 @@ export function addLayoutClasses(html: string, b: Block): string {
 }
 
 export function addClassToFirstTag(html: string, cls: string): string {
+  if (!cls.trim()) return html;
   return html.replace(/<([a-z][\w-]*)(\s[^>]*?)?(\/?)>/i, (m, tag: string, attrs = '', sc: string) => {
     if (/\sclass\s*=\s*"/i.test(attrs)) return `<${tag}${attrs.replace(/(\sclass\s*=\s*")([^"]*)"/i, (_x: string, a: string, v: string) => `${a}${v ? v + ' ' : ''}${cls}"`)}${sc}>`;
     return `<${tag}${attrs} class="${cls}"${sc}>`;

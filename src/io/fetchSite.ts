@@ -6,7 +6,7 @@
  * page from the browser as "Web Page, Single File (.mht)" and import that archive.
  *
  * Binary files (pictures, fonts) need a byte-safe transport. The desktop bridge's http call returns text;
- * when it also returns `base64` (see the note in the final report of this feature) pictures are saved,
+ * with `binary: true` it returns the body as base64, so pictures and fonts are saved,
  * otherwise they stay as links to the original server.
  */
 import { Site, unb64 } from '../model/site';
@@ -33,9 +33,9 @@ export async function httpRequest(o: { url: string; method?: string; headers?: R
   };
   if (desktopHttp && /^https:/i.test(o.url) && (typeof o.body !== 'object' || o.body == null)) {
     try {
-      const r: any = await (desktopHttp as any)({ url: o.url, method, headers, data: o.body, responseType: o.binary ? 'base64' : 'text' });
+      const r = await desktopHttp({ url: o.url, method, headers, data: o.body, binary: !!o.binary });
       if (o.binary) {
-        if (typeof r.base64 === 'string') return { status: r.status, text: '', bytes: unb64(r.base64), headers: r.headers };
+        if (typeof r.data === 'string') return { status: r.status, text: '', bytes: unb64(r.data), headers: r.headers };
         // The bridge returned text only: bytes would be damaged. Try the renderer, which works where CORS allows.
         try { return await viaFetch(); } catch { return { status: 0, text: '' }; }
       }

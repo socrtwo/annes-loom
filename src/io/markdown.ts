@@ -106,15 +106,15 @@ function blocks(lines: string[], refs: Map<string, { url: string; title?: string
           break;
         }
         while (item.length && !item[item.length - 1].trim()) item.pop();
-        if (blank && i < lines.length && LIST_RE.test(lines[i])) loose = true;
+        const nx = i < lines.length ? LIST_RE.exec(lines[i]) : null;
+        if (blank && nx && /\d/.test(nx[2]) === ordered && nx[2].slice(-1) === marker) loose = true;
         items.push({ lines: item, loose });
       }
       const tag = ordered ? 'ol' : 'ul';
       const lis = items.map((it) => {
         let body = blocks(it.lines, refs).trim();
         if (!loose) body = body.replace(/^<p>([\s\S]*?)<\/p>/, '$1').replace(/<p>([\s\S]*?)<\/p>(?=\n?<(ul|ol)>)/g, '$1');
-        const task = /^\[([ xX])\]\s+/.exec(body);
-        if (task) body = `<input type="checkbox" disabled${task[1] !== ' ' ? ' checked' : ''}> ` + body.slice(task[0].length);
+        body = body.replace(/^(<p>)?\[([ xX])\]\s+/, (m, p: string | undefined, x: string) => `${p || ''}<input type="checkbox" disabled${x !== ' ' ? ' checked' : ''}> `);
         return `<li>${body}</li>`;
       });
       out.push(`<${tag}${ordered && start !== 1 ? ` start="${start}"` : ''}>\n${lis.join('\n')}\n</${tag}>`);

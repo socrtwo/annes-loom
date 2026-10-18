@@ -1,0 +1,19 @@
+{# Page layout #}
+<div class="layout-container">
+  <header role="banner">
+    <a href="{{ path('<front>') }}" class="site-name">{{ site_name }}</a>
+    {{ page.header }}
+    {{ page.primary_menu }}
+  </header>
+  <main role="main">
+    {{ page.content }}
+  </main>
+  {% if page.sidebar %}
+    <aside class="sidebar">{{ page.sidebar }}</aside>
+  {% else %}
+    <p>No sidebar</p>
+  {% endif %}
+  {% if page.footer %}
+    <footer>{{ page.footer }}</footer>
+  {% endif %}
+</div>

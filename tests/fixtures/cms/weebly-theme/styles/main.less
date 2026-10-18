@@ -1,0 +1,26 @@
+// Weebly-style theme variables
+@brand: #8a3b12;
+@text: #222;
+@pad: 16px;
+
+.rounded() { border-radius: 6px; }
+.shadowed { box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+
+body {
+  color: @text;
+  margin: 0;
+  .header {
+    padding: @pad;
+    .nav a {
+      color: @brand;
+      &:hover { text-decoration: underline; }
+    }
+  }
+  .banner { background: url(/files/theme/hero.svg) center / cover; min-height: 240px; }
+}
+.wsite-button {
+  .rounded();
+  .shadowed;
+  background: @brand;
+  @media (max-width: 600px) { display: block; }
+}

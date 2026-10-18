@@ -49,11 +49,12 @@ export function cleanWordHtml(html: string, opts: { keepStyles?: boolean } = {})
   // Word lists.
   convertLists(body, count);
   // Attributes.
-  for (const el of [...body.querySelectorAll('*')]) {
+  for (const el0 of [...body.querySelectorAll('*')]) {
+    let el = el0;
     const cls = el.getAttribute('class');
     if (cls != null) {
       const m = /^Mso(Title|Subtitle|Heading(\d))/.exec(cls);
-      if (m && el.tagName === 'P') { const level = m[2] ? Math.min(6, +m[2]) : m[1] === 'Title' ? 1 : 2; rename(el, `h${level}`); }
+      if (m && el.tagName === 'P') { const level = m[2] ? Math.min(6, +m[2]) : m[1] === 'Title' ? 1 : 2; el = rename(el, `h${level}`); }
       const keep = cls.split(/\s+/).filter((c) => c && !/^Mso|^western$|^c\d+$/.test(c));
       if (keep.length) el.setAttribute('class', keep.join(' ')); else el.removeAttribute('class');
       if (/Mso|c\d/.test(cls)) count('Office classes');
@@ -65,8 +66,7 @@ export function cleanWordHtml(html: string, opts: { keepStyles?: boolean } = {})
         if (!KEEP_STYLE.test(p) || /mso|windowtext|auto$/i.test(v)) return false;
         if (/^(color)$/i.test(p) && /^(black|#000(000)?|rgb\(0,\s*0,\s*0\))$/i.test(v)) return false;
         if (/^background(-color)?$/i.test(p) && /^(transparent|white|#fff(fff)?)$/i.test(v)) return false;
-        if (/^(font-weight)$/i.test(p) && /^(normal|400)$/i.test(v)) return false;
-        if (/^(font-style)$/i.test(p) && /^normal$/i.test(v)) return false;
+        if (/^(font-weight|font-style)$/i.test(p) && (/^(normal|400)$/i.test(v) || el.tagName === 'SPAN')) return false;
         if (/^(width|height)$/i.test(p) && !/^(IMG|TABLE|TD|TH)$/.test(el.tagName)) return false;
         if (/^text-align$/i.test(p) && /^(left|start)$/i.test(v)) return false;
         if (/^text-decoration(-line)?$/i.test(p) && /^none$/i.test(v)) return false;
@@ -74,7 +74,7 @@ export function cleanWordHtml(html: string, opts: { keepStyles?: boolean } = {})
         return true;
       });
       if (kept.length < st.split(';').filter((x) => x.trim()).length) count('Office style properties');
-      if (kept.length) el.setAttribute('style', kept.join('; ')); else el.removeAttribute('style');
+      if (kept.length) el.setAttribute('style', kept.map((d) => d.replace(/\s*:\s*/, ': ')).join('; ')); else el.removeAttribute('style');
     }
     for (const a of ['lang', 'xml:lang', 'dir', 'align', 'valign', 'nowrap', 'border', 'cellspacing', 'cellpadding', 'width', 'height', 'bgcolor', 'link', 'vlink', 'clear', 'data-ql-bullet']) {
       if (a === 'dir' && el.getAttribute('dir') === 'rtl') continue;

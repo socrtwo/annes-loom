@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="template" client="site" method="upgrade">
+	<name>Tidewater</name>
+	<version>2.1</version>
+	<author>Fixture Studio</author>
+	<license>GNU General Public License version 2 or later</license>
+	<description>A small template for tests.</description>
+	<files>
+		<filename>index.php</filename>
+		<filename>templateDetails.xml</filename>
+		<folder>css</folder>
+	</files>
+	<positions>
+		<position>menu</position>
+		<position>sidebar-right</position>
+		<position>footer</position>
+	</positions>
+</extension>

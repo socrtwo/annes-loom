@@ -1,0 +1,10 @@
+/*
+Theme Name: Harbor Light
+Author: Fixture Studio
+Description: A small classic theme for tests. Calm and simple.
+Version: 0.3.0
+License: GNU General Public License v2 or later
+Text Domain: harbor-light
+*/
+body { font-family: Georgia, serif; }
+.site-header { background: url(images/wave.svg) repeat-x; }

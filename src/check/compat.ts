@@ -157,7 +157,7 @@ export function checkCss(css: string, base: number, lines: LineIndex, modern: bo
   return out;
 }
 
-const PLUGIN = /\.(swf|flv|class|jar|xap|mov|rm|ram|wmv|asf|mid|midi)(\?|$)|shockwave|x-java|silverlight|x-ms-wmp|quicktime|realaudio|futuresplash|youtube\.com\/v\//i;
+const PLUGIN = /\.(swf|flv|class|jar|xap|mov|rm|ram|wmv|asf|mid|midi)(\?|\s|$)|shockwave|x-java|silverlight|x-ms-wmp|quicktime|realaudio|futuresplash|youtube\.com\/v\//i;
 
 /** Checks a page (and optionally its linked files) for browser compatibility problems. */
 export function checkCompat(src: string, opts: CompatOptions = {}): Issue[] {

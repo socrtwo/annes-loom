@@ -8,11 +8,11 @@ import { registerPane, sigOf, typingIn } from './panes';
 import { h, icon, clear } from './dom';
 import { toast, promptDialog, confirmDialog, showMenu } from './dialog';
 import * as C from '../model/css';
-import { isPage, view, selectedEl, mutate, setAttr, getAttr, setStyleProp, styleOf } from '../editor/ops';
+import { isPage, view, selectedEl, mutate, setAttr, getAttr, styleOf } from '../editor/ops';
 import { cacheFor } from '../editor/workspace';
 import { isPagePath } from '../model/paths';
 import {
-  pageSheets, writeSheet, modifyRule, applyClass, definedClasses, previewStyle, track, fileText, editFile, inlineOf, removeClass, type SheetRef,
+  pageSheets, writeSheet, setInline, modifyRule, applyClass, definedClasses, previewStyle, track, fileText, editFile, inlineOf, removeClass, type SheetRef,
 } from '../commands/css';
 
 // ------------------------------------------------------------------------------------------
@@ -190,7 +190,7 @@ function overridden(list: Applied[], a: Applied, d: C.CssDecl): boolean {
 const cssPaneState = { chosen: '' as string, all: false };
 
 function writeRuleProp(app: App, a: Applied, el: HTMLElement, prop: string, value: string | null): void {
-  if (a.key === 'inline') { mutate(app, () => setStyleProp(app, el, prop, value)); return; }
+  if (a.key === 'inline') { mutate(app, () => setInline(app, el, prop, value)); return; }
   const sheet = pageSheets(app).find((s) => s.id === a.sheet!.id);
   if (!sheet) return;
   const rule = C.parseCss(sheet.css).rules[a.rule!.index];
@@ -448,9 +448,9 @@ registerPane({
       const on = d!.selected === e;
       const pos = doc.defaultView!.getComputedStyle(e).position;
       const row = h('div', { style: rowStyle + (on ? ';background:var(--on)' : ''), title: `<${elLabel(e)}> position: ${pos}` },
-        h('button', { class: 'ql-iconbtn ql-sm', title: hidden ? 'Show' : 'Hide', 'aria-label': hidden ? 'Show layer' : 'Hide layer', type: 'button', onclick: (ev: Event) => { ev.stopPropagation(); mutate(app, () => setStyleProp(app, e, 'visibility', hidden ? null : 'hidden')); } }, icon(hidden ? 'visibility_off' : 'visibility')),
+        h('button', { class: 'ql-iconbtn ql-sm', title: hidden ? 'Show' : 'Hide', 'aria-label': hidden ? 'Show layer' : 'Hide layer', type: 'button', onclick: (ev: Event) => { ev.stopPropagation(); mutate(app, () => setInline(app, e, 'visibility', hidden ? null : 'hidden')); } }, icon(hidden ? 'visibility_off' : 'visibility')),
         h('span', { style: 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:12px ui-monospace,Consolas,monospace' + (pos === 'relative' || pos === 'sticky' ? ';opacity:.75' : '') }, e.id || `<${elLabel(e)}>`),
-        (() => { const inp = cellInput(own['z-index'] || '', (v) => mutate(app, () => setStyleProp(app, e, 'z-index', v.trim() && !isNaN(+v) ? String(Math.round(+v)) : null)), { label: 'Z-index', placeholder: 'auto' }); inp.style.flex = '0 0 56px'; inp.addEventListener('click', (ev) => ev.stopPropagation()); return inp; })());
+        (() => { const inp = cellInput(own['z-index'] || '', (v) => mutate(app, () => setInline(app, e, 'z-index', v.trim() && !isNaN(+v) ? String(Math.round(+v)) : null)), { label: 'Z-index', placeholder: 'auto' }); inp.style.flex = '0 0 56px'; inp.addEventListener('click', (ev) => ev.stopPropagation()); return inp; })());
       row.addEventListener('click', () => d!.select(e));
       row.addEventListener('dblclick', () => { d!.select(e); app.exec('format.layerProperties'); });
       el.appendChild(row);

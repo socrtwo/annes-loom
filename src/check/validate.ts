@@ -607,7 +607,7 @@ export function validateHtml(src: string, opts: ValidateOptions = {}): Issue[] {
       if (BOOLEAN_ATTRS.has(a.name) && a.value != null && a.value !== '' && a.value.toLowerCase() !== a.name) at(a, a.value === 'false' ? 'error' : 'warning', `Boolean attribute ${a.name}="${a.value}": any value turns it on${a.value === 'false' ? ' (even "false")' : ''}. Write ${a.name} alone, or remove it to turn it off.`, 'bool-attr');
       if (a.value != null && /&/.test(a.value)) checkAmp(a.value, a.start + a.name.length + 2, lines, issues, xhtml);
       if (xhtml) {
-        if (/[A-Z]/.test(a.name)) at(a, 'error', `XHTML: attribute names must be lower case (${a.name}).`, 'xhtml');
+        { const rawName = src.slice(a.start, a.start + a.name.length); if (/[A-Z]/.test(rawName)) at(a, 'error', `XHTML: attribute names must be lower case (${rawName}).`, 'xhtml'); }
         if (a.value == null) at(a, 'error', `XHTML: attribute ${a.name} needs a value (${a.name}="${a.name}").`, 'xhtml');
         else if (!a.quote) at(a, 'error', `XHTML: the value of ${a.name} must be in quotes.`, 'xhtml');
       }

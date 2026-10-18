@@ -224,7 +224,7 @@ export function combineNestedSpans(src: string): string {
   let s = src;
   for (let k = 0; k < 6; k++) {
     const before = s;
-    s = s.replace(re, (m, a, w1, b, inner, w2) => `<span style="${mergeStyle(b, Object.fromEntries(a.split(';').map((d: string) => d.split(':')).filter((p: string[]) => p.length >= 2).map((p: string[]) => [p[0].trim(), p.slice(1).join(':').trim()])), false)}">${w1}${inner}${w2}</span>`);
+    s = s.replace(re, (m, a, w1, b, inner, w2) => `<span style="${mergeStyle(a, Object.fromEntries(b.split(';').map((d: string) => d.split(':')).filter((p: string[]) => p.length >= 2).map((p: string[]) => [p[0].trim().toLowerCase(), p.slice(1).join(':').trim()])), true)}">${w1}${inner}${w2}</span>`);
     if (s === before) break;
   }
   return s;

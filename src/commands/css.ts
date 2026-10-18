@@ -234,6 +234,16 @@ export function nextStyleName(app: App, base = 'style'): string {
   return `${base}${max + 1}`;
 }
 
+/** Sets one inline declaration, keeping values as written (colors stay as typed) and resource links in step. */
+export function setInline(app: App, el: Element, prop: string, value: string | null): void {
+  const cur = el.getAttribute('data-ql-o-style') ?? el.getAttribute('style') ?? '';
+  const next = C.setStyleDecls(cur, { [prop]: value });
+  if (next === cur.trim().replace(/;\s*$/, '') && el.hasAttribute('style')) return;
+  if (/url\(/i.test(next) && app.active) { el.setAttribute('data-ql-o-style', next); el.setAttribute('style', cacheFor(app).css(next, app.active.path, 'blob')); return; }
+  el.removeAttribute('data-ql-o-style');
+  if (next) el.setAttribute('style', next); else el.removeAttribute('style');
+}
+
 export function addClass(el: Element, cls: string): void {
   const list = (el.getAttribute('class') || '').split(/\s+/).filter(Boolean);
   if (!list.includes(cls)) list.push(cls);
@@ -276,11 +286,10 @@ export function applyAsClass(app: App, el: HTMLElement, props: Record<string, st
   const doc = el.ownerDocument;
   const sheets = pageSheets(app).filter((s) => s.kind === 'page');
   let cls = [...el.classList].find((c) => /^style\d+$/.test(c) && doc.querySelectorAll('.' + CSS.escape(c)).length === 1 && sheets.some((s) => C.findRules(s.css, '.' + c).length));
-  if (!cls) {
-    const name = nextStyleName(app);
-    if (!mutate(app, () => addClass(el, name))) return;
-    cls = name;
-  }
+  const name = cls || nextStyleName(app);
+  // The class carries the formatting, so the same properties leave the inline style (it would win).
+  if (!mutate(app, () => { addClass(el, name); for (const p of Object.keys(props)) setInline(app, el, p, null); })) return;
+  cls = name;
   keepSelection(app);
   app.editSource(label, (src) => editHeadStyle(src, (css) => C.setDeclarations(css, '.' + cls, props)));
 }
@@ -288,7 +297,7 @@ export function applyAsClass(app: App, el: HTMLElement, props: Record<string, st
 /** Sets declarations on a Design view element: inline styles, or a generated class in "Classes" mode. */
 export function applyProps(app: App, el: HTMLElement, props: Record<string, string | null>, label = 'Format'): void {
   if (app.prefs.cssMode === 'class') { applyAsClass(app, el, props, label); return; }
-  mutate(app, () => { for (const [p, v] of Object.entries(props)) setStyleProp(app, el, p, v); });
+  mutate(app, () => { for (const [p, v] of Object.entries(props)) setInline(app, el, p, v); });
 }
 
 /**
@@ -316,8 +325,8 @@ export function styleSelection(app: App, props: Record<string, string | null>, l
     let span: HTMLElement | null = null;
     const ok = mutate(app, () => {
       span = wrapRange(app, r);
-      for (const e of span.querySelectorAll<HTMLElement>('[style]')) for (const p of Object.keys(props)) setStyleProp(app, e, p, null);
-      if (app.prefs.cssMode !== 'class') for (const [p, x] of Object.entries(set)) setStyleProp(app, span, p, x);
+      for (const e of span.querySelectorAll<HTMLElement>('[style]')) for (const p of Object.keys(props)) setInline(app, e, p, null);
+      if (app.prefs.cssMode !== 'class') for (const [p, x] of Object.entries(set)) setInline(app, span, p, x);
     });
     if (ok && span && app.prefs.cssMode === 'class') applyAsClass(app, span, set, label);
     return;
@@ -581,7 +590,7 @@ export async function openStyleDialog(app: App, o: StyleDialogOpts): Promise<boo
   const selector = String(v.selector || '').trim();
   if (o.mode === 'inline') {
     if (!el) return false;
-    return mutate(app, () => { for (const [p, x] of Object.entries(changes)) setStyleProp(app, el, p, x); });
+    return mutate(app, () => { for (const [p, x] of Object.entries(changes)) setInline(app, el, p, x); });
   }
   if (o.mode === 'modify' && o.sheet && o.ruleIndex != null) {
     let css = o.sheet.css;
@@ -601,7 +610,7 @@ export async function openStyleDialog(app: App, o: StyleDialogOpts): Promise<boo
       mutate(app, () => {
         if (m) for (const c of m[1].split('.').filter(Boolean)) addClass(el, c);
         if (id) el.id = id;
-        if (v.removeInline) for (const p of Object.keys(props)) setStyleProp(app, el as HTMLElement, p, null);
+        if (v.removeInline) for (const p of Object.keys(props)) setInline(app, el as HTMLElement, p, null);
       });
     }
   }

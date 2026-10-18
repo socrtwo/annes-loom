@@ -15,11 +15,11 @@ import { decodeEntities } from '../model/site';
 import { relativeRef } from '../model/paths';
 import { cacheFor } from '../editor/workspace';
 import * as C from '../model/css';
-import { isPage, inDesign, view, selectedEl, closestSel, mutate, setStyleProp, wrapTag, richCommand, formatBlock, unwrap, selectionText, insertHtml } from '../editor/ops';
+import { isPage, inDesign, view, selectedEl, closestSel, mutate, wrapTag, richCommand, formatBlock, unwrap, selectionText, insertHtml } from '../editor/ops';
 import { renameElement } from '../editor/designView';
 import { libraryItemMarkup, updateLibraryItems } from '../site/templates';
 import {
-  pageOk, textOk, track, styleSelection, applyProps, fileText, editFile, pageSheets, keepSelection, propFields, syncPicker, previewHtml, inlineOf,
+  pageOk, textOk, track, setInline, styleSelection, applyProps, fileText, editFile, pageSheets, keepSelection, propFields, syncPicker, previewHtml, inlineOf,
   STYLE_CATEGORIES, FONT_SIZES, fontList, saveFontList, FONT_STACKS, newStyleFromSelection, elementStyleDialog, pickPages, siteImages, type PropSpec,
 } from './css';
 
@@ -238,7 +238,23 @@ function blockNone(app: App): void {
 }
 
 function setBlock(app: App, tag: string): void {
-  if (tag === 'none') blockNone(app); else formatBlock(app, tag);
+  if (tag === 'none') { blockNone(app); return; }
+  // In a list item or table cell the block goes inside the item, not around the list.
+  const v = view(app);
+  const el = v?.target === 'design' ? selectedEl(app) : null;
+  const cell = el?.closest('p,h1,h2,h3,h4,h5,h6,pre,address,div,blockquote,li,dt,dd,td,th');
+  if (cell && /^(LI|DT|DD|TD|TH)$/.test(cell.tagName) && tag !== 'blockquote') {
+    mutate(app, (doc) => {
+      const only = cell.children.length === 1 && cell.firstElementChild!.matches('p,h1,h2,h3,h4,h5,h6,pre,address,div') && !(cell.textContent || '').replace(cell.firstElementChild!.textContent || '', '').trim() ? cell.firstElementChild! : null;
+      if (only) { const n = renameElement(only, tag); v!.design!.select(n, { contents: true }); return; }
+      const n = doc.createElement(tag);
+      while (cell.firstChild) n.appendChild(cell.firstChild);
+      cell.appendChild(n);
+      v!.design!.select(n, { contents: true });
+    });
+    return;
+  }
+  formatBlock(app, tag);
 }
 
 async function paragraphDialog(app: App): Promise<void> {
@@ -266,7 +282,7 @@ async function paragraphDialog(app: App): Promise<void> {
   if (app.prefs.cssMode === 'tags' && ch['text-align'] && /^(left|center|right|justify)$/.test(ch['text-align']!)) {
     const a = ch['text-align']!;
     delete ch['text-align'];
-    mutate(app, () => { b.setAttribute('align', a); setStyleProp(app, b, 'text-align', null); });
+    mutate(app, () => { b.setAttribute('align', a); setInline(app, b, 'text-align', null); });
   } else if (b.hasAttribute('align')) mutate(app, () => b.removeAttribute('align'));
   applyProps(app, b, ch, 'Paragraph');
 }
@@ -281,7 +297,7 @@ function align(app: App, value: 'left' | 'center' | 'right' | 'justify'): void {
   const cur = (b.getAttribute('align') || inlineOf(b)['text-align'] || '').toLowerCase();
   const next = cur === value && value !== 'left' ? null : value;
   if (app.prefs.cssMode === 'tags' && b.tagName !== 'BODY') {
-    mutate(app, () => { if (next) b.setAttribute('align', next); else b.removeAttribute('align'); setStyleProp(app, b, 'text-align', null); });
+    mutate(app, () => { if (next) b.setAttribute('align', next); else b.removeAttribute('align'); setInline(app, b, 'text-align', null); });
     return;
   }
   if (b.hasAttribute('align')) mutate(app, () => b.removeAttribute('align'));
@@ -422,9 +438,9 @@ async function listDialog(app: App): Promise<void> {
     if (v.kind === 'ol' && v.start !== null && v.start !== '' && !isNaN(+v.start)) target.setAttribute('start', String(Math.round(+v.start))); else target.removeAttribute('start');
     if (v.kind === 'ol' && v.reversed) target.setAttribute('reversed', ''); else target.removeAttribute('reversed');
     if (app.prefs.cssMode !== 'class') {
-      setStyleProp(app, target, 'list-style-type', v.type === defType ? null : v.type);
-      setStyleProp(app, target, 'list-style-image', v.image && v.image !== 'none' ? v.image : null);
-      setStyleProp(app, target, 'list-style-position', v.position || null);
+      setInline(app, target, 'list-style-type', v.type === defType ? null : v.type);
+      setInline(app, target, 'list-style-image', v.image && v.image !== 'none' ? v.image : null);
+      setInline(app, target, 'list-style-position', v.position || null);
     }
   });
   if (app.prefs.cssMode === 'class') applyProps(app, target, { 'list-style-type': v.type === defType ? null : v.type, 'list-style-image': v.image && v.image !== 'none' ? v.image : null, 'list-style-position': v.position || null }, 'List Properties');
@@ -577,7 +593,7 @@ function zOrder(app: App, how: 'front' | 'back' | 'forward' | 'backward'): void 
   order.splice(i, 1);
   const j = how === 'front' ? order.length : how === 'back' ? 0 : how === 'forward' ? Math.min(order.length, i + 1) : Math.max(0, i - 1);
   order.splice(j, 0, el);
-  mutate(app, () => order.forEach((e, k) => setStyleProp(app, e, 'z-index', String(k + 1))));
+  mutate(app, () => order.forEach((e, k) => setInline(app, e, 'z-index', String(k + 1))));
 }
 
 /** Aligns the absolutely positioned siblings of the selected element to it. */
@@ -594,12 +610,12 @@ function alignLayers(app: App, how: 'left' | 'top' | 'right' | 'bottom' | 'width
       const px = (n: number) => `${Math.round(n)}px`;
       const extraW = c.boxSizing === 'border-box' ? 0 : (parseFloat(c.paddingLeft) || 0) + (parseFloat(c.paddingRight) || 0) + (parseFloat(c.borderLeftWidth) || 0) + (parseFloat(c.borderRightWidth) || 0);
       const extraH = c.boxSizing === 'border-box' ? 0 : (parseFloat(c.paddingTop) || 0) + (parseFloat(c.paddingBottom) || 0) + (parseFloat(c.borderTopWidth) || 0) + (parseFloat(c.borderBottomWidth) || 0);
-      if (how === 'left') { setStyleProp(app, o, 'left', px(L - ml)); setStyleProp(app, o, 'right', null); }
-      if (how === 'right') { setStyleProp(app, o, 'left', px(L + W - o.offsetWidth - ml)); setStyleProp(app, o, 'right', null); }
-      if (how === 'top') { setStyleProp(app, o, 'top', px(T - mt)); setStyleProp(app, o, 'bottom', null); }
-      if (how === 'bottom') { setStyleProp(app, o, 'top', px(T + H - o.offsetHeight - mt)); setStyleProp(app, o, 'bottom', null); }
-      if (how === 'width') setStyleProp(app, o, 'width', px(W - extraW));
-      if (how === 'height') setStyleProp(app, o, 'height', px(H - extraH));
+      if (how === 'left') { setInline(app, o, 'left', px(L - ml)); setInline(app, o, 'right', null); }
+      if (how === 'right') { setInline(app, o, 'left', px(L + W - o.offsetWidth - ml)); setInline(app, o, 'right', null); }
+      if (how === 'top') { setInline(app, o, 'top', px(T - mt)); setInline(app, o, 'bottom', null); }
+      if (how === 'bottom') { setInline(app, o, 'top', px(T + H - o.offsetHeight - mt)); setInline(app, o, 'bottom', null); }
+      if (how === 'width') setInline(app, o, 'width', px(W - extraW));
+      if (how === 'height') setInline(app, o, 'height', px(H - extraH));
     }
   });
 }
@@ -1171,7 +1187,7 @@ const commands: Command[] = [
       defaults: { display: 'flex' }, help: 'These settings make the selected element a flex container; its child elements are laid out in a row or a column.',
       extra: [{ key: 'kidsFlex', label: 'Make the child elements share the space equally (flex: 1)', type: 'checkbox', value: false }],
       preview: (v) => boxPreview(Object.fromEntries(FLEX_SPECS.map((s) => [s.prop, v[s.prop]]).concat([['kidsFlex', v.kidsFlex]]))),
-      onApply: (el, v) => { if (v.kidsFlex) mutate(app, () => { for (const k of el.children) if (!k.hasAttribute('data-ql-ui')) setStyleProp(app, k as HTMLElement, 'flex', '1 1 0'); }); },
+      onApply: (el, v) => { if (v.kidsFlex) mutate(app, () => { for (const k of el.children) if (!k.hasAttribute('data-ql-ui')) setInline(app, k as HTMLElement, 'flex', '1 1 0'); }); },
     }),
   },
   {

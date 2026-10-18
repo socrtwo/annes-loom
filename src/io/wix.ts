@@ -163,3 +163,6 @@ export const HOW_TO: { title: string; steps: string[] }[] = [
 ];
 
 void escAttr;
+
+/** Same as importWixSite (name used by the command). */
+export const importFromUrl = importWixSite;

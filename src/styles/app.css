@@ -133,7 +133,7 @@ textarea { width: 100%; resize: vertical; font-family: ui-monospace, "Cousine", 
 
 /* Main area */
 .ql-main { flex: 1; display: flex; min-height: 0; position: relative; }
-.ql-workspace { flex: 1; position: relative; min-width: 0; display: flex; }
+.ql-workspace { flex: 1; position: relative; min-width: 0; min-height: 0; display: flex; }
 .ql-scroll { flex: 1; overflow: auto; background: var(--canvas); position: relative; -webkit-overflow-scrolling: touch; outline: none; }
 .ql-pane { width: 340px; max-width: 42vw; border-left: 1px solid var(--border); background: var(--surface); display: none; flex-direction: column; min-height: 0; }
 .ql-pane-open .ql-pane { display: flex; }

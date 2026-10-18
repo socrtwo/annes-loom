@@ -158,7 +158,7 @@ export function unwrap(el: Element): void {
 export function outerSource(el: Element): string {
   const c = el.cloneNode(true) as Element;
   for (const e of [c, ...c.querySelectorAll('*')]) {
-    for (const a of [...e.attributes]) if (a.name.startsWith('data-ql-o-')) { const n = a.name.slice(10); if (n === 'text') e.textContent = a.value; else e.setAttribute(n, a.value); e.removeAttribute(a.name); }
+    for (const a of [...e.attributes]) if (a.name.startsWith('data-ql-o-')) { const n = a.name.slice(10); if (n === 'text') e.textContent = a.value; else if (n === 'type' && a.value === '') e.removeAttribute('type'); else e.setAttribute(n, a.value); e.removeAttribute(a.name); }
   }
   c.querySelectorAll('[data-ql-ui]').forEach((x) => x.remove());
   return c.outerHTML;

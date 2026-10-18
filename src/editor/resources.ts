@@ -93,7 +93,9 @@ export function restoreOriginals(root: Element): void {
     for (const a of [...el.attributes]) {
       if (!a.name.startsWith('data-ql-o-')) continue;
       const name = a.name.slice(10);
-      if (name === 'text') el.textContent = a.value; else el.setAttribute(name, a.value);
+      if (name === 'text') el.textContent = a.value;
+      else if (name === 'type' && a.value === '') el.removeAttribute('type');
+      else el.setAttribute(name, a.value);
       el.removeAttribute(a.name);
     }
   }

@@ -62,6 +62,8 @@ export class DesignView {
     const token = ++this.loadToken;
     const parsed = new DOMParser().parseFromString(src, 'text/html');
     rewriteDom(parsed, path, this.cache, 'blob', true);
+    // Scripts never run in Design view; giving them an inert type keeps the browser from even trying.
+    for (const sc of parsed.querySelectorAll('script')) { sc.setAttribute('data-ql-o-type', sc.getAttribute('type') ?? ''); sc.setAttribute('type', 'text/x-ql-inert'); }
     const style = parsed.createElement('style');
     style.id = 'ql-aids';
     style.setAttribute(UI_ATTR, '');
@@ -254,6 +256,7 @@ export class DesignView {
     if (!doc) return;
     const tmp = new DOMParser().parseFromString(`<body>${markup}</body>`, 'text/html');
     rewriteDom(tmp, pagePath, this.cache, 'blob', true);
+    for (const sc of tmp.querySelectorAll('script')) { sc.setAttribute('data-ql-o-type', sc.getAttribute('type') ?? ''); sc.setAttribute('type', 'text/x-ql-inert'); }
     const html = tmp.body.innerHTML;
     this.focus();
     const r = this.restoreRange();

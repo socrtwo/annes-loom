@@ -136,3 +136,13 @@ describe('html source helpers', () => {
     expect(setTagAttr('<body class="a">', 'class', 'b')).toBe('<body class="b">');
   });
 });
+
+import { restoreOriginals } from '../../src/editor/resources';
+describe('design view originals', () => {
+  it('restores script types and resource links exactly', () => {
+    const d = document.createElement('div');
+    d.innerHTML = '<script type="text/x-ql-inert" data-ql-o-type="">a()</script><script type="text/x-ql-inert" data-ql-o-type="module">b()</script><img src="blob:x" data-ql-o-src="img/a.png">';
+    restoreOriginals(d);
+    expect(d.innerHTML).toBe('<script>a()</script><script type="module">b()</script><img src="img/a.png">');
+  });
+});

@@ -728,7 +728,7 @@ export class Shell {
     const mod = e.ctrlKey || e.metaKey || e.altKey || /^F\d+$/.test(e.key);
     if (inCode) {
       // CodeMirror owns undo, redo, find, indent, comment and selection keys; app commands get the rest.
-      if (!mod || /^edit\.(undo|redo|selectAll|copy|cut|paste|find|replace|indent|outdent|comment)$/.test(id) || id.startsWith('code.')) return;
+      if (!mod || /^edit\.(undo|redo|selectAll|copy|cut|paste|find|indent|outdent|comment)$/.test(id) || id.startsWith('code.')) return;
     } else if (inField) {
       if (!/^(file\.|view\.cmdSearch)/.test(id) || !mod) return;
     } else if (!mod && !/^(Delete|Backspace)$/.test(e.key)) return;

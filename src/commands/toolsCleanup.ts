@@ -5,7 +5,7 @@
  * Each works on the current page or, with the argument 'site', on every page; each change is one undo
  * step in pages that are open.
  */
-import { def, type MenuEntry } from './registry';
+import { def, getCommand, type MenuEntry } from './registry';
 import type { App } from '../app';
 import { openDialog, toast, alertDialog, confirmDialog, choiceDialog } from '../ui/dialog';
 import { h } from '../ui/dom';
@@ -15,7 +15,7 @@ import {
   optimizeHtml, cleanupHtml, cleanupWordHtml, removeEmptyTags, removeComments, removeFontTags, fontToCss, inlineToClasses, inlineBlocks,
   toHtml5, toXhtmlPage, fixMojibake, minifyPage, minifyCss, minifyJs, markupCleaner, applyEdits, type CleanResult,
 } from '../check/cleanup';
-import { setCharset, getCharset, editHeadStyle, addStylesheet, headInsert, escAttr, DOCTYPES } from '../model/html';
+import { setCharset, getCharset, editHeadStyle, addStylesheet, escAttr, DOCTYPES } from '../model/html';
 import { relativeRef, resolveRef, isPagePath, dirOf, stripExt, baseName, joinPath, extOf } from '../model/paths';
 import { rewriteRefs } from '../model/site';
 
@@ -342,9 +342,8 @@ def([
   { id: 'tools.minifySite', label: 'Minify Site', icon: 'folder_zip', tab: 'Check', group: 'Clean Up', edits: true, origin: 'Expression Web Optimize HTML at publishing', keywords: 'minify all files publish compress', run: (app) => minifySite(app) },
   {
     id: 'tools.cleanupMenu', label: 'More Clean Up', icon: 'cleaning_services', tab: 'Check', group: 'Clean Up', kind: 'menu', noRecord: true, origin: 'Dreamweaver Commands menu, HomeSite CodeSweeper',
-    run: (app) => app.ui.openCommandMenu?.({ id: 'tools.cleanupMenu' } as any, app.ui.anchorFor('tools.cleanupMenu')),
+    run: (app) => { const c = getCommand('tools.cleanupMenu')!; app.ui.openCommandMenu(c, app.ui.anchorFor(c.id)); },
     menu: (): MenuEntry[] => CLEANUP_MENU.map((id) => (id === '|' ? { separator: true } : { id })),
   },
 ]);
 
-void headInsert;

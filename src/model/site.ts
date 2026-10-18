@@ -228,7 +228,7 @@ export function linkable(path: string): boolean {
   return isPagePath(path) || ['css', 'scss', 'less', 'svg', 'xml', 'rss'].includes(extOf(path));
 }
 
-const ATTR_RE = /(\s(?:href|src|action|poster|data|background|longdesc|cite|usemap|formaction|content|data-src|data-background|lowsrc|dynsrc)\s*=\s*)(["']?)([^"'\s>]*)\2/gi;
+const ATTR_RE = /(\s(?:href|src|action|poster|data|background|longdesc|cite|usemap|formaction|content|data-src|data-background|data-ql-rollover|lowsrc|dynsrc)\s*=\s*)(["']?)([^"'\s>]*)\2/gi;
 const SRCSET_RE = /(\ssrcset\s*=\s*)(["'])([^"']*)\2/gi;
 const CSS_URL_RE = /(url\(\s*)(["']?)([^"')]+)\2(\s*\))/gi;
 const CSS_IMPORT_RE = /(@import\s+)(["'])([^"']+)\2/gi;

@@ -159,7 +159,7 @@ export function sourceRangeOf(tab: PageTab, el: Element): [number, number] | nul
 // Design frame extras
 
 const NO_PSEUDO = new Set(['img', 'input', 'br', 'hr', 'iframe', 'video', 'audio', 'canvas', 'select', 'textarea', 'svg', 'object', 'embed', 'meter', 'progress', 'wbr', 'area', 'source', 'track', 'col', 'colgroup', 'option', 'optgroup', 'script', 'style', 'template', 'math']);
-const BADGE = 'font:normal normal 10px/1.3 ui-monospace,Consolas,monospace!important;color:#6b4a00!important;background:#fff1bf!important;border:1px solid #d9b04a!important;border-radius:2px!important;padding:0 2px!important;margin:0 1px!important;display:inline-block!important;vertical-align:middle!important;text-decoration:none!important;text-transform:none!important;letter-spacing:0!important;white-space:nowrap!important;float:none!important;position:static!important';
+const BADGE = 'font:normal normal 10px/1.3 ui-monospace,Consolas,monospace!important;color:#6b4a00!important;background:#fff1bf!important;border:1px solid #d9b04a!important;border-radius:2px!important;padding:0 2px!important;margin:0 1px!important;display:inline-block!important;vertical-align:middle!important;text-decoration:none!important;text-transform:none!important;letter-spacing:0!important;white-space:nowrap!important;float:none!important;position:static!important;flex:none!important;align-self:center!important;width:auto!important;height:auto!important';
 
 function extrasCss(doc: Document): string {
   const c: string[] = [];

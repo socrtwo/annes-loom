@@ -1,0 +1,162 @@
+name: Release
+
+# Builds QuillLoom for every platform it supports and publishes one GitHub release:
+#   Web (zip + installable PWA)        Windows (installer x64/arm64, portable x64)
+#   macOS (universal .dmg/.zip)        Linux x64/arm64/armv7l (AppImage, .deb): desktop Linux,
+#                                      Raspberry Pi OS (arm64, armhf) and ChromeOS (Linux apps)
+# Android and iOS packaging is not set up yet (there are no android/ or ios/ projects); on phones
+# and tablets, install the web app from the browser.
+# Run it from the Actions tab (any branch: published as a prerelease v<version>-build.<run>),
+# push a tag v<version>, or push a commit whose message contains [release] (prerelease).
+# The last option exists for environments that may push branches but not tags.
+
+on:
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Mark the release as a prerelease'
+        type: boolean
+        default: true
+  push:
+    tags: ['v*']
+    branches: ['**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  web:
+    name: Web
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[release]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - id: v
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Package
+        run: |
+          mkdir -p out
+          (cd dist && zip -qr "../out/QuillLoom-${{ steps.v.outputs.version }}-web.zip" .)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QuillLoom-web
+          path: out/*.zip
+          if-no-files-found: error
+
+  desktop:
+    name: Desktop (${{ matrix.name }})
+    needs: web
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: Linux, os: ubuntu-latest, args: --linux }
+          - { name: Windows, os: windows-latest, args: --win }
+          - { name: macOS, os: macos-latest, args: --mac }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/prepare-desktop.mjs
+      - name: Check the staged desktop app
+        shell: bash
+        run: |
+          node --check build/desktop-app/electron/main.cjs
+          node --check build/desktop-app/electron/preload.cjs
+          node --check build/desktop-app/electron/ftp.cjs
+          test -f build/desktop-app/dist/index.html
+      - name: Package
+        shell: bash
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --config electron-builder.config.cjs ${{ matrix.args }} --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QuillLoom-desktop-${{ matrix.name }}
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.zip
+            release/*.AppImage
+            release/*.deb
+          if-no-files-found: error
+
+  publish:
+    name: Publish release
+    needs: [web, desktop]
+    # Publish whatever built, as long as the tested web build did; the notes list any failures.
+    if: ${{ !cancelled() && needs.web.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: QuillLoom-*
+          path: out
+          merge-multiple: true
+      - name: Checksums
+        run: |
+          cd out
+          ls -la
+          # electron-builder also writes latest*.yml and blockmaps; only the downloads are released.
+          rm -f latest*.yml *.blockmap
+          sha256sum QuillLoom-* > SHA256SUMS.txt
+      - id: meta
+        run: |
+          V='${{ needs.web.outputs.version }}'
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then TAG="${GITHUB_REF#refs/tags/}"; else TAG="v$V-build.${{ github.run_number }}"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          # Tags: prerelease when the version has a suffix (v1.0.0-beta.1). Manual runs: the checkbox.
+          # [release] commits: always a prerelease.
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then [[ "$TAG" == *-* ]] && PRE=true || PRE=false
+          elif [[ "${{ github.event_name }}" == workflow_dispatch ]]; then PRE='${{ inputs.prerelease }}'
+          else PRE=true; fi
+          echo "prerelease=$PRE" >> "$GITHUB_OUTPUT"
+          FAILED=""
+          for j in "desktop:${{ needs.desktop.result }}"; do
+            [[ "${j#*:}" == success ]] || FAILED="$FAILED ${j%%:*}"
+          done
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: QuillLoom ${{ steps.meta.outputs.tag }}
+          prerelease: ${{ steps.meta.outputs.prerelease == 'true' }}
+          make_latest: ${{ steps.meta.outputs.prerelease != 'true' }}
+          generate_release_notes: true
+          body: |
+            Built from `${{ github.ref_name }}` at ${{ github.sha }}. Installation for each platform: docs/INSTALL.md.
+
+            | Platform | File |
+            |---|---|
+            | Windows 10/11 | `*-windows-x64-setup.exe`, `*-windows-arm64-setup.exe`, or `*-windows-portable.exe` (no install) |
+            | macOS 11+ (Apple silicon and Intel) | `*-mac-universal.dmg` (unsigned: right-click ▸ Open the first time) |
+            | Linux | `*-linux-x86_64.AppImage` or `*-linux-amd64.deb` |
+            | Raspberry Pi OS | 64-bit: `*-linux-arm64.deb` / `*-linux-arm64.AppImage`; 32-bit: `*-linux-armv7l.deb` |
+            | ChromeOS | the Linux `.deb` (Linux development environment), or install the web app from the browser |
+            | Android, iOS / iPadOS | no native package yet: install the web app from the browser (Add to Home Screen) |
+            | Web | `*-web.zip`: put the files on any static web server (HTTPS for offline use and installing) |
+
+            ${{ steps.meta.outputs.failed && format('**Not in this release (build failed):**{0}', steps.meta.outputs.failed) || '' }}
+          files: |
+            out/QuillLoom-*
+            out/SHA256SUMS.txt

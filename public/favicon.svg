@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- QuillLoom: woven threads (the web) with a gold quill drawn through them. Original artwork, MIT License. -->
+  <defs>
+    <linearGradient id="ql-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#367C6C"/><stop offset="1" stop-color="#235748"/></linearGradient>
+    <linearGradient id="ql-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3D57A"/><stop offset="1" stop-color="#D2A239"/></linearGradient>
+  </defs>
+  <rect id="bg" width="512" height="512" rx="112" fill="url(#ql-bg)"/>
+  <g id="art" transform="translate(256 262) scale(0.86) translate(-250 -238)">
+    <g fill="none">
+      <path d="M58 156H312M58 218H312M58 280H312M58 342H312" stroke="#9ED6C6" stroke-width="40" stroke-linecap="round"/>
+      <path d="M92 122V376M154 122V376M216 122V376M278 122V376" stroke="#F7F4EB" stroke-width="40" stroke-linecap="round"/>
+      <path d="M68 156H116M68 280H116M130 218H178M130 342H178M192 156H240M192 280H240M254 218H302M254 342H302" stroke="#9ED6C6" stroke-width="40"/>
+      <path d="M68 136V176M116 136V176M72 194H112M72 242H112M68 260V300M116 260V300M72 318H112M72 366H112M134 132H174M134 180H174M130 198V238M178 198V238M134 256H174M134 304H174M130 322V362M178 322V362M192 136V176M240 136V176M196 194H236M196 242H236M192 260V300M240 260V300M196 318H236M196 366H236M258 132H298M258 180H298M254 198V238M302 198V238M258 256H298M258 304H298M254 322V362M302 322V362" stroke="#1D4A3F" stroke-width="5" opacity=".28"/>
+    </g>
+    <g transform="translate(262 300) rotate(42)">
+      <path d="M0 0L-7 -40H7Z" fill="#2A2925"/>
+      <path d="M-7 -40C-46 -120 -40 -230 0 -292C40 -230 46 -120 7 -40Z" fill="url(#ql-gold)" stroke="#7E5A10" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M0 -44V-270" stroke="#7E5A10" stroke-width="7" stroke-linecap="round"/>
+      <path d="M0 -100L-26 -124M0 -150L-30 -176M0 -200L-26 -224M0 -120L26 -144M0 -170L29 -196M0 -220L22 -242" stroke="#A97E1E" stroke-width="5" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

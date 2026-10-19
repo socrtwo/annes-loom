@@ -1,0 +1,42 @@
+From: <Saved by a browser>
+Subject: Garden Notes
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--abc123----"
+
+------MultipartBoundary--abc123----
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://garden.example.com/notes/index.html
+
+<!DOCTYPE html><html><head><meta charset=3D"utf-8"><title>Garden Notes</tit=
+le><link rel=3D"stylesheet" href=3D"../css/main.css"></head><body><h1>Gard=
+en Notes =E2=80=94 Spring</h1><p><img src=3D"https://garden.example.com/im=
+g/tulip.png" alt=3D"Tulip"></p><img src=3D"cid:frame-1@mhtml.blink"></body=
+></html>
+------MultipartBoundary--abc123----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://garden.example.com/css/main.css
+
+body { background: url("../img/leaf.gif"); }
+------MultipartBoundary--abc123----
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Location: https://garden.example.com/img/tulip.png
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==
+------MultipartBoundary--abc123----
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: https://garden.example.com/img/leaf.gif
+
+R0lGODlhAQABAAAAACw=
+------MultipartBoundary--abc123----
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-ID: <frame-1@mhtml.blink>
+
+R0lGODlhAQABAAAAACw=
+------MultipartBoundary--abc123------

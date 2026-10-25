@@ -295,7 +295,7 @@ export function parseFtpUrl(url: string): { host: string; port?: number; secure:
 /** FTP/FTPS through the desktop app: files are collected and sent in one session when publishing ends. */
 export function ftpDestination(profile: PublishProfile, password: string, ftp: ((o: { host: string; port?: number; user: string; password: string; secure?: boolean; dir?: string; files: { path: string; data: string }[]; remove?: string[] }) => Promise<{ ok: boolean; log: string[] }>) | null): Destination {
   if (profile.kind === 'sftp') throw new Error('SFTP (SSH) is not supported. Most hosts that offer SFTP also offer FTPS (FTP over TLS): choose FTP and turn on "Use FTPS".');
-  if (!ftp) throw new Error('FTP publishing needs the QuillLoom desktop app: web pages cannot open FTP connections. Use WebDAV, GitHub Pages, a folder or a ZIP file here.');
+  if (!ftp) throw new Error('FTP publishing needs the Anne\'s Loom desktop app: web pages cannot open FTP connections. Use WebDAV, GitHub Pages, a folder or a ZIP file here.');
   const { host, port, secure } = parseFtpUrl(profile.url);
   const files: { path: string; data: string }[] = [];
   const remove: string[] = [];

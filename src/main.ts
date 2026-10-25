@@ -1,4 +1,4 @@
-/** QuillLoom entry point. */
+/** Anne's Loom entry point. */
 import 'material-symbols/outlined.css';
 import './styles/app.css';
 import './styles/loom.css';

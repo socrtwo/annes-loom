@@ -1,7 +1,7 @@
 /**
  * Command registry.
  *
- * Every user-facing action in QuillLoom is a Command. The ribbon tabs, the Quick Access
+ * Every user-facing action in Anne's Loom is a Command. The ribbon tabs, the Quick Access
  * Bar, context menus, keyboard shortcuts, the command search palette, macros and the
  * customization dialogs all reference commands by id, so anything that exists in the app
  * can be placed anywhere the user wants.

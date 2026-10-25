@@ -1,5 +1,5 @@
 /**
- * Quill suite scroll cues (see scrollcue.css). Framework-free; one instance per page.
+ * Anne's Office suite scroll cues (see scrollcue.css). Framework-free; one instance per page.
  *
  *   import { installScrollCues } from './scrollcue';
  *   installScrollCues({ selector: '.menu, .dialog-body, .list', label: 'More' });

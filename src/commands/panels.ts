@@ -28,7 +28,7 @@ export const PANEL_LIST: [string, string, string, string][] = [
   ['cssReports', 'CSS Reports', 'analytics', 'Expression Web'],
   ['history', 'History', 'history', 'Dreamweaver'],
   ['outline', 'Outline', 'toc', 'Dreamweaver (DOM panel), BlueGriffon'],
-  ['ai', 'AI Assistant', 'auto_awesome', 'Quill suite'],
+  ['ai', 'AI Assistant', 'auto_awesome', 'Anne\'s Office suite'],
 ];
 
 export function togglePanel(app: App, id: string): void {

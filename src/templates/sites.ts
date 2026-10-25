@@ -46,7 +46,7 @@ function starterTemplate(): string {
 <footer class="site-footer">
   <div class="wrap">
     <p>&copy; 2026 My Web Site</p>
-    <p>Made with QuillLoom</p>
+    <p>Made with Anne\'s Loom</p>
   </div>
 </footer>
 </body>

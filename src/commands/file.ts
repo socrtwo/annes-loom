@@ -310,7 +310,7 @@ const baselineOf = (tab: PageTab) => baselines.get(tab) ?? tab.history.stack[0] 
 
 function setTitleBar(app: App): void {
   const t = app.active;
-  if (t) document.title = `${t.displayName}${t.dirty ? ' •' : ''} – ${app.site.name} – QuillLoom`;
+  if (t) document.title = `${t.displayName}${t.dirty ? ' •' : ''} – ${app.site.name} – Anne\'s Loom`;
 }
 
 function markClean(app: App, tabs: PageTab[]): void {
@@ -413,7 +413,7 @@ async function openRecentEntry(app: App, key: string): Promise<void> {
   if (p.kind === 'file' && app.docs[0]) app.docs[0].uri = p.uri || null;
   rememberSite(app);
   const when = rec ? new Date(rec.when).toLocaleString() : 'its last save';
-  if (p.kind === 'folder') toast(site.folder ? `Opened the copy of ${site.name} kept on this device (${when}). Changes made outside QuillLoom since then are not shown; use Open Site to read the folder again.` : `Opened the copy of ${site.name} kept on this device (${when}). This browser cannot reopen the folder itself; save to a folder again or use Open Site.`, { ms: 9000 });
+  if (p.kind === 'folder') toast(site.folder ? `Opened the copy of ${site.name} kept on this device (${when}). Changes made outside Anne\'s Loom since then are not shown; use Open Site to read the folder again.` : `Opened the copy of ${site.name} kept on this device (${when}). This browser cannot reopen the folder itself; save to a folder again or use Open Site.`, { ms: 9000 });
   else toast(`Opened the copy of ${p.name} kept on this device (${when}).`, { ms: 6000 });
 }
 
@@ -1106,7 +1106,7 @@ function loadFrame(frame: HTMLIFrameElement, html: string): void {
   else frame.srcdoc = html;
 }
 
-/** Opens a new browser window with the page in a sandboxed frame (page scripts never run in QuillLoom's origin). */
+/** Opens a new browser window with the page in a sandboxed frame (page scripts never run in Anne's Loom's origin). */
 async function openPreviewWindow(title: string, html: string, width?: number): Promise<void> {
   if (desktopFolders) {
     const r = await desktopFolders.setPreview({ id: 'ql-' + newId('w'), html });
@@ -1345,7 +1345,7 @@ async function pageProperties(app: App): Promise<void> {
     { key: 'ml', label: 'Left', type: 'text', value: v.ml, half: true }, { key: 'mr', label: 'Right', type: 'text', value: v.mr, half: true },
     { key: 'h4', type: 'heading', label: 'Language and Document Type' },
     { key: 'lang', label: 'Page language', type: 'combo', value: v.lang, options: LANGS, half: true },
-    { key: 'charset', label: 'Character encoding', type: 'combo', value: v.charset, options: CHARSETS, half: true, help: 'Changes the declaration only; QuillLoom writes files as UTF-8 (see File ▸ Save with Encoding).' },
+    { key: 'charset', label: 'Character encoding', type: 'combo', value: v.charset, options: CHARSETS, half: true, help: 'Changes the declaration only; Anne\'s Loom writes files as UTF-8 (see File ▸ Save with Encoding).' },
     { key: 'doctype', label: 'Document type', type: 'select', value: doctype, options: [...DOCTYPES.map((d) => ({ value: d.id, label: d.label })), ...(doctype === 'custom' ? [{ value: 'custom', label: 'Custom (keep as written)' }] : [])] },
     { key: 'h5', type: 'heading', label: 'Custom' },
     { key: 'meta', label: 'Other meta tags (name = content, one per line)', type: 'textarea', rows: 3, value: v.meta },
@@ -1544,7 +1544,7 @@ async function importSiteWizard(app: App, arg?: { to?: 'new' | 'current'; from?:
   const r = await openDialog({ title: 'Import Site Wizard', fields: [
     { key: 'from', label: 'Import from', type: 'radio', value: arg?.from || 'folder', options: [
       { value: 'folder', label: 'A folder on this device' }, { value: 'zip', label: 'A ZIP archive (site, template or theme)' },
-      { value: 'url', label: 'A web address (download a published site)' }, { value: 'qlsite', label: 'A QuillLoom site file (.qlsite)' },
+      { value: 'url', label: 'A web address (download a published site)' }, { value: 'qlsite', label: 'A Anne\'s Loom site file (.qlsite)' },
     ] },
     { key: 'url', label: 'Address', type: 'text', placeholder: 'https://example.com/', visibleIf: (v) => v.from === 'url' },
     { key: 'pages', label: 'Pages to download (following links on the same site)', type: 'number', value: 10, min: 1, max: 200, visibleIf: (v) => v.from === 'url' },
@@ -1862,7 +1862,7 @@ async function saveAsCharset(app: App): Promise<void> {
   if (!tab || tab.kind !== 'page') { toast('Open a page first.'); return; }
   tab.ui.flush();
   const cur = (getCharset(tab.source) || 'utf-8').toLowerCase();
-  const r = await openDialog({ title: 'Save with Encoding', help: 'Browsers can only write UTF-8 text. For another encoding, QuillLoom changes the declaration and writes every character outside plain ASCII as a numeric character reference (&#233;), which reads the same in any of these encodings.', fields: [
+  const r = await openDialog({ title: 'Save with Encoding', help: 'Browsers can only write UTF-8 text. For another encoding, Anne\'s Loom changes the declaration and writes every character outside plain ASCII as a numeric character reference (&#233;), which reads the same in any of these encodings.', fields: [
     { key: 'cs', label: 'Character encoding', type: 'select', value: ['utf-8', 'windows-1252', 'iso-8859-1', 'iso-8859-15', 'us-ascii'].includes(cur) ? cur : 'utf-8', options: [{ value: 'utf-8', label: 'Unicode (UTF-8)' }, { value: 'windows-1252', label: 'Western European (Windows-1252)' }, { value: 'iso-8859-1', label: 'Western European (ISO-8859-1)' }, { value: 'iso-8859-15', label: 'Western European (ISO-8859-15)' }, { value: 'us-ascii', label: 'US-ASCII' }] },
   ], ok: 'Save' });
   if (!r) return;
@@ -1963,7 +1963,7 @@ async function exitApp(app: App): Promise<void> {
 
 async function optionsDialog(app: App): Promise<void> {
   const p = app.prefs;
-  const r = await openDialog({ title: 'QuillLoom Options', wide: true, fields: [
+  const r = await openDialog({ title: 'Anne\'s Loom Options', wide: true, fields: [
     { key: 'h1', type: 'heading', label: 'General' },
     { key: 'author', label: 'User name', type: 'text', value: p.author, half: true },
     { key: 'initials', label: 'Initials', type: 'text', value: p.initials, half: true },
@@ -1985,7 +1985,7 @@ async function optionsDialog(app: App): Promise<void> {
     { key: 'cssMode', label: 'Formatting is written as', type: 'select', value: p.cssMode, half: true, options: [{ value: 'auto', label: 'Automatic (classes when a style sheet is linked)' }, { value: 'inline', label: 'Inline styles' }, { value: 'class', label: 'CSS classes' }, { value: 'tags', label: 'Tags (b, i, font)' }] },
     { key: 'useStrongEm', label: 'Use <strong> and <em> instead of <b> and <i>', type: 'checkbox', value: p.useStrongEm, half: true },
     { key: 'formatOnSave', label: 'Apply source formatting when saving pages', type: 'checkbox', value: p.formatOnSave, half: true },
-    { key: 'warnExternal', label: 'Warn about files changed outside QuillLoom', type: 'checkbox', value: p.warnExternal, half: true },
+    { key: 'warnExternal', label: 'Warn about files changed outside Anne\'s Loom', type: 'checkbox', value: p.warnExternal, half: true },
     { key: 'autoCorrect', label: 'AutoCorrect as you type', type: 'checkbox', value: p.autoCorrect, half: true },
     { key: 'smartQuotes', label: 'Smart quotes', type: 'checkbox', value: p.smartQuotes, half: true },
     { key: 'autoCapitalize', label: 'Capitalize the first letter of sentences', type: 'checkbox', value: p.autoCapitalize, half: true },
@@ -2174,7 +2174,7 @@ def([
   // Preview and print -------------------------------------------------------------------------
   {
     id: 'file.previewBrowser', label: 'Preview in Browser', icon: 'travel_explore', tab: 'Backstage', group: 'Preview', kind: 'split', keys: ['F12'], popular: true, noRecord: true, edits: false,
-    tip: 'Open the page in a new browser window (its scripts run in a sandbox, never with access to QuillLoom)',
+    tip: 'Open the page in a new browser window (its scripts run in a sandbox, never with access to Anne\'s Loom)',
     run: (app, arg) => previewInBrowser(app, typeof arg === 'number' && arg > 0 ? arg : undefined),
     menu: () => [{ id: 'file.previewBrowser', label: 'Full Window' }, ...loadBrowsers().map((b) => ({ id: 'file.previewBrowser', arg: b.width, label: `${b.name} (${b.width} px)` })), { separator: true }, { id: 'file.previewMultiple', label: 'All Sizes at Once' }, { id: 'file.editBrowsers', label: 'Edit Browser List…' }],
   },
@@ -2228,7 +2228,7 @@ def([
   {
     id: 'file.exportSettings', label: 'Export / Import Settings…', icon: 'import_export', tab: 'Backstage', group: 'Options', noRecord: true, edits: false,
     run: async (app) => {
-      const r = await openDialog({ title: 'Settings Transfer', wide: true, help: 'Copy this text to back up your Quick Access Bar, custom tabs, shortcuts, macros, AutoCorrect and options. Paste settings here and choose Import to restore them. The format is shared with the other Quill apps; settings that do not apply are ignored.', fields: [{ key: 'json', label: 'Settings (JSON)', type: 'textarea', rows: 14, value: JSON.stringify({ ...app.prefs, recent: [] }, null, 1) }], ok: 'Import', buttons: [{ label: 'Copy', onClick: (x) => { void navigator.clipboard?.writeText(x.json); toast('Copied'); } }, { label: 'Save to File…', onClick: (x) => download(new Blob([x.json], { type: 'application/json' }), 'quillloom-settings.json') }] });
+      const r = await openDialog({ title: 'Settings Transfer', wide: true, help: 'Copy this text to back up your Quick Access Bar, custom tabs, shortcuts, macros, AutoCorrect and options. Paste settings here and choose Import to restore them. The format is shared with the other Anne\'s Office apps; settings that do not apply are ignored.', fields: [{ key: 'json', label: 'Settings (JSON)', type: 'textarea', rows: 14, value: JSON.stringify({ ...app.prefs, recent: [] }, null, 1) }], ok: 'Import', buttons: [{ label: 'Copy', onClick: (x) => { void navigator.clipboard?.writeText(x.json); toast('Copied'); } }, { label: 'Save to File…', onClick: (x) => download(new Blob([x.json], { type: 'application/json' }), 'quillloom-settings.json') }] });
       if (!r) return;
       let p: unknown;
       try { p = JSON.parse(r.json); } catch { /* reported below */ }

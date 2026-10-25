@@ -1,4 +1,4 @@
-# Building QuillLoom
+# Building Anne's Loom
 
 All platforms share one web build (`npm run build` → `dist/`). The desktop app wraps it in Electron.
 
@@ -8,9 +8,9 @@ All platforms share one web build (`npm run build` → `dist/`). The desktop app
 | Windows, macOS, Linux, Raspberry Pi OS | Electron (`electron/`) | `npm run desktop:dist` | the target OS (macOS builds need a Mac) |
 | Android, iOS / iPadOS | not set up yet | — | — |
 
-QuillLoom has no Android or iOS project yet (no `android/` or `ios/` folders), so there is no APK or IPA. On phones and tablets, install the web app from the browser. The platform bridge (`src/platform/native.ts`) already has the Capacitor code paths that the other Quill apps use, so adding those projects later is mostly configuration.
+Anne's Loom has no Android or iOS project yet (no `android/` or `ios/` folders), so there is no APK or IPA. On phones and tablets, install the web app from the browser. The platform bridge (`src/platform/native.ts`) already has the Capacitor code paths that the other Anne's Office apps use, so adding those projects later is mostly configuration.
 
-**Releases:** run the **Release** workflow (Actions tab ▸ Release ▸ Run workflow), push a tag `v<version>`, or push a commit whose message contains `[release]` (published as a prerelease). GitHub Actions builds the web app and the desktop apps and publishes them as one release with `SHA256SUMS.txt` (`.github/workflows/release.yml`). The file names follow the pattern the other Quill apps use, so the QuillOffice suite can bundle QuillLoom once it is included there.
+**Releases:** run the **Release** workflow (Actions tab ▸ Release ▸ Run workflow), push a tag `v<version>`, or push a commit whose message contains `[release]` (published as a prerelease). GitHub Actions builds the web app and the desktop apps and publishes them as one release with `SHA256SUMS.txt` (`.github/workflows/release.yml`). The file names follow the pattern the other Anne's Office apps use, so the Anne's Office suite can bundle Anne's Loom once it is included there.
 
 ## Checks
 
@@ -73,7 +73,7 @@ The main process (`electron/main.cjs`) serves `dist/` from the `app://quillloom`
 
 ## Icons
 
-`node scripts/gen-icons.mjs` renders `resources/icon.svg` (the QuillLoom icon: woven threads with a gold quill) to `resources/icon-1024.png` (installers), `resources/icon-512.png` (desktop window), `public/icons/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` and `apple-touch-icon.png`, and copies it to `public/favicon.svg`. It uses Playwright's Chromium (`CHROMIUM_PATH` overrides it). The SVG must keep its `<rect id="bg">` background and `<g id="art">` artwork group, which the script uses to make the full-bleed and maskable variants.
+`node scripts/gen-icons.mjs` renders `resources/icon.svg` (the Anne's Loom icon: woven threads with a gold quill) to `resources/icon-1024.png` (installers), `resources/icon-512.png` (desktop window), `public/icons/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` and `apple-touch-icon.png`, and copies it to `public/favicon.svg`. It uses Playwright's Chromium (`CHROMIUM_PATH` overrides it). The SVG must keep its `<rect id="bg">` background and `<g id="art">` artwork group, which the script uses to make the full-bleed and maskable variants.
 
 ## Command reference
 

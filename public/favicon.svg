@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <!-- QuillLoom: woven threads (the web) with a gold quill drawn through them. Original artwork, MIT License. -->
+  <!-- Anne's Loom: woven threads (the web) with a gold quill drawn through them. Original artwork, MIT License. -->
   <defs>
     <linearGradient id="ql-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#367C6C"/><stop offset="1" stop-color="#235748"/></linearGradient>
     <linearGradient id="ql-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3D57A"/><stop offset="1" stop-color="#D2A239"/></linearGradient>

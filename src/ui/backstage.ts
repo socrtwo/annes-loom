@@ -107,7 +107,7 @@ export function renderBackstage(app: App, root: HTMLElement, page: string): void
       body.append(h('h1', null, 'Save As'), h('div', { class: 'ql-bs-cards' },
         card('Page As…', 'Save the current file under another name in the site', 'save_as', run('file.saveAs')),
         card('Site to Folder…', 'Write every file into a folder on this device', 'drive_folder_upload', run('file.saveSiteToFolder')),
-        card('Site as QuillLoom Site (.qlsite)…', 'One file with every page, picture and setting', 'inventory_2', run('file.exportQlsite')),
+        card('Site as Anne\'s Loom Site (.qlsite)…', 'One file with every page, picture and setting', 'inventory_2', run('file.exportQlsite')),
         card('Site as ZIP…', 'Every file, ready to upload anywhere', 'folder_zip', run('file.exportZip')),
         card('Page as Template…', 'Keep this page as one of My Templates', 'bookmark_add', run('file.saveAsMyTemplate', 'page')),
         card('Site as Template…', 'Keep the whole site as one of My Templates', 'bookmarks', run('file.saveAsMyTemplate', 'site')),
@@ -133,7 +133,7 @@ export function renderBackstage(app: App, root: HTMLElement, page: string): void
     case 'export': {
       body.append(h('h1', null, 'Export'), h('div', { class: 'ql-bs-cards' },
         card('ZIP of the Site', 'Every published file', 'folder_zip', run('file.exportZip')),
-        card('QuillLoom Site (.qlsite)', 'Everything including settings and tasks', 'inventory_2', run('file.exportQlsite')),
+        card('Anne\'s Loom Site (.qlsite)', 'Everything including settings and tasks', 'inventory_2', run('file.exportQlsite')),
         card('Copy of This File…', 'Save the current file anywhere', 'download', run('file.exportFile')),
         card('Web Archive (.mht)', 'This page with its pictures in one file', 'archive', run('file.exportMhtml')),
         card('PDF / Print', 'Print the page or save it as PDF', 'picture_as_pdf', run('file.exportPdf')),

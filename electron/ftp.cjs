@@ -1,4 +1,4 @@
-// QuillLoom desktop app: a small FTP / explicit FTPS client for publishing a site.
+// Anne's Loom desktop app: a small FTP / explicit FTPS client for publishing a site.
 //
 // Uses only node:net and node:tls. Supports USER/PASS, explicit TLS (AUTH TLS, PBSZ 0, PROT P, data
 // connections in TLS that reuse the control connection's session), binary transfers, passive mode
@@ -6,7 +6,7 @@
 // data transfer has a timeout. The password is never written to the log.
 //
 // Data connections always go to the control connection's host, whatever address the server puts in
-// its PASV reply, so a hostile server cannot point QuillLoom at another machine ("FTP bounce").
+// its PASV reply, so a hostile server cannot point Anne's Loom at another machine ("FTP bounce").
 'use strict';
 const net = require('node:net');
 const tls = require('node:tls');

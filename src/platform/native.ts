@@ -6,7 +6,7 @@
  * - Desktop (Windows, macOS, Linux, Raspberry Pi OS): the Electron preload (electron/preload.cjs)
  *   exposes the same interface as `window.quillDesktop`, backed by native file dialogs and the file system.
  * - Browser and iOS: <input type=file>, the File System Access API or downloads, and window.print().
- *   On iOS, saved files go to the app's Documents folder (Files ▸ On My iPhone ▸ QuillLoom).
+ *   On iOS, saved files go to the app's Documents folder (Files ▸ On My iPhone ▸ Anne's Loom).
  */
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { download, pickFile } from '../ui/dom';
@@ -42,7 +42,7 @@ interface QuillNativePlugin {
   /** One-shot http://127.0.0.1:<port>/ listener for OAuth redirects (OpenRouter PKCE); only requests for `path` count. */
   startLoopback(opts: { timeoutMs: number; successHtml?: string; path?: string }): Promise<{ port: number }>;
   stopLoopback(): Promise<void>;
-  /** Android: hand a document to a sibling Quill app (ACTION_VIEW with its package). */
+  /** Android: hand a document to a sibling Anne's Office app (ACTION_VIEW with its package). */
   openInApp?(opts: { packageName: string; name: string; mime: string; data: string }): Promise<{ opened: boolean; reason?: string }>;
 }
 
@@ -132,7 +132,7 @@ export async function openDocument(accept: string, mimeTypes: string[]): Promise
 }
 
 function toastSaved(name: string): void {
-  import('../ui/dialog').then(({ toast }) => toast(`Saved "${name}" to Files ▸ On My iPhone ▸ QuillLoom`)).catch(() => undefined);
+  import('../ui/dialog').then(({ toast }) => toast(`Saved "${name}" to Files ▸ On My iPhone ▸ Anne's Loom`)).catch(() => undefined);
 }
 
 export async function saveAs(blob: Blob, name: string): Promise<{ uri: string | null; name: string } | null> {
@@ -232,7 +232,7 @@ export async function shareFile(blob: Blob, name: string, title?: string): Promi
 }
 
 /**
- * iOS has no QuillNative plugin: "Open in QuillLoom" and Share arrive as file:// URLs through the
+ * iOS has no QuillNative plugin: "Open in Anne's Loom" and Share arrive as file:// URLs through the
  * Capacitor App plugin. With LSSupportsOpeningDocumentsInPlace off, iOS copies the file into the app's
  * Documents/Inbox first, so it can be read without a security-scoped bookmark. There is no write-back
  * URI: Save on iOS goes through Save As / Share.
@@ -309,11 +309,11 @@ export const OPEN_ACCEPT = '.html,.htm,.xhtml,.shtml,.php,.asp,.aspx,.jsp,.dwt,.
 export const OPEN_MIMES = ['text/html', 'text/css', 'text/javascript', 'application/json', 'application/xml', 'text/xml', 'image/svg+xml', 'text/plain', 'text/markdown', 'application/zip', 'application/x-zip-compressed', 'message/rfc822', 'multipart/related', 'application/octet-stream'];
 
 // ------------------------------------------------------------------------------------------
-// Sibling Quill apps
+// Sibling Anne's Office apps
 
-export type QuillApp = 'QuillPen' | 'QuillPost' | 'QuillGrid';
+export type QuillApp = 'Anne\'s Pen' | 'Anne\'s Post' | 'Anne\'s Grid';
 export const QUILL_APP_IDS: Record<QuillApp, string> = {
-  QuillPen: 'io.github.socrtwo.quillpen', QuillPost: 'io.github.socrtwo.quillpost', QuillGrid: 'io.github.socrtwo.quillgrid',
+  'Anne\'s Pen': 'io.github.socrtwo.quillpen', 'Anne\'s Post': 'io.github.socrtwo.quillpost', 'Anne\'s Grid': 'io.github.socrtwo.quillgrid',
 };
 
 /**

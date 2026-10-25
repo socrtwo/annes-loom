@@ -463,7 +463,7 @@ async function pasteCmd(app: App, mode?: PasteMode): Promise<void> {
   const clip = await readClipboard();
   if (!clip) {
     if (v.target === 'design' && v.design && v.design.exec(mode === 'text' ? 'insertText' : 'paste')) { v.flush(); return; }
-    toast('This browser does not let QuillLoom read the clipboard from a button. Press Ctrl+V (⌘V) in the page instead, or use Paste Special after allowing clipboard access.', { ms: 7000 });
+    toast('This browser does not let Anne\'s Loom read the clipboard from a button. Press Ctrl+V (⌘V) in the page instead, or use Paste Special after allowing clipboard access.', { ms: 7000 });
     return;
   }
   const { html, text } = clip;
@@ -657,7 +657,7 @@ function externalEditor(app: App): void {
   if (!f) return;
   const bytes = app.site.bytes(t.path)!;
   download(new Blob([bytes as BlobPart], { type: f.mime }), t.path.split('/').pop() || 'file');
-  toast('A web page cannot start other programs, so QuillLoom saved a copy of this file for you to open in another editor. Bring the edited file back with File ▸ Import (same name replaces it).', { ms: 9000 });
+  toast('A web page cannot start other programs, so Anne\'s Loom saved a copy of this file for you to open in another editor. Bring the edited file back with File ▸ Import (same name replaces it).', { ms: 9000 });
 }
 
 async function tagLibraries(app: App): Promise<void> {

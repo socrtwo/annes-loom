@@ -786,7 +786,7 @@ async function calculator(app: App): Promise<void> {
 
 async function extensionsInfo(app: App, title: string): Promise<void> {
   const content = h('div', { class: 'ql-msg' },
-    h('p', null, 'QuillLoom is extended with macros: recorded or hand-written sequences of commands, and JavaScript macros that call any command with app.exec(id, argument) and read or change site files.'),
+    h('p', null, 'Anne\'s Loom is extended with macros: recorded or hand-written sequences of commands, and JavaScript macros that call any command with app.exec(id, argument) and read or change site files.'),
     h('p', null, 'Every command in the ribbon and menus can be placed in a macro, on the Quick Access Bar, on a custom ribbon tab or on a keyboard shortcut.'),
     h('p', null, 'Macros and their keys are kept on this device. Developer ▸ Macros lists, runs, edits, imports and exports them.'));
   await openDialog({ title, content, ok: false, cancel: 'Close', buttons: [{ label: 'Open Macros', primary: true, onClick: (_v, ctl) => { ctl.close(); app.exec('dev.macros'); } }, { label: 'Macro Editor', onClick: (_v, ctl) => { ctl.close(); app.exec('dev.macroEditor'); } }] });

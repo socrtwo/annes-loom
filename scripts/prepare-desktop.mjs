@@ -17,7 +17,7 @@ for (const f of ['main.cjs', 'preload.cjs', 'ftp.cjs']) cpSync(join(root, 'elect
 cpSync(join(root, 'resources/icon-512.png'), join(out, 'electron/icon.png'));
 writeFileSync(join(out, 'package.json'), JSON.stringify({
   name: 'quillloom',
-  productName: 'QuillLoom',
+  productName: 'Anne\'s Loom',
   version: pkg.version,
   description: pkg.description,
   homepage: 'https://github.com/socrtwo/QuillLoom',

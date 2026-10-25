@@ -2,7 +2,7 @@
   "name": "quillloom",
   "version": "0.1.0",
   "private": true,
-  "description": "QuillLoom: an original open-source web site editor (WYSIWYG + code) with a complete, customizable command library, AI, and WordPress, Weebly, Wix and template import.",
+  "description": "Anne's Loom: an original open-source web site editor (WYSIWYG + code) with a complete, customizable command library, AI, and WordPress, Weebly, Wix and template import.",
   "license": "MIT",
   "type": "module",
   "scripts": {

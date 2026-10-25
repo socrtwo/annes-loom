@@ -60,7 +60,7 @@ export class Shell {
     this.titlebar = h('header', { class: 'ql-titlebar' });
     const fileBtn = h('button', { class: 'ql-iconbtn ql-filebtn', title: 'File', 'aria-label': 'File menu', onclick: () => this.showBackstage() }, icon('menu'));
     this.qatEl = h('div', { class: 'ql-qat', role: 'toolbar', 'aria-label': 'Quick Access Bar' });
-    this.titleBtn = h('button', { class: 'ql-title', title: 'Site and page properties', onclick: () => this.app.exec('file.pageProperties') }, 'QuillLoom');
+    this.titleBtn = h('button', { class: 'ql-title', title: 'Site and page properties', onclick: () => this.app.exec('file.pageProperties') }, 'Anne\'s Loom');
     const search = h('button', { class: 'ql-iconbtn', title: 'Search commands (Alt+Q)', 'aria-label': 'Search commands', onclick: () => this.commandPalette() }, icon('search'));
     const preview = h('button', { class: 'ql-btn ql-present', title: 'Preview in Browser (F12)', onclick: () => this.app.exec('file.previewBrowser') }, icon('travel_explore'), h('span', { class: 'ql-present-label' }, ' Preview'));
     const publish = h('button', { class: 'ql-iconbtn', title: 'Publish Site', 'aria-label': 'Publish site', onclick: () => this.app.exec('site.publish') }, icon('cloud_upload'));
@@ -762,7 +762,7 @@ export class Shell {
 
   async tour(): Promise<void> {
     const steps = [
-      ['Everything is a command', 'Every feature of QuillLoom is a command you can find with the search button (or Alt+Q), place on the Quick Access Bar, put on your own tab, assign a key, or record in a macro.'],
+      ['Everything is a command', 'Every feature of Anne\'s Loom is a command you can find with the search button (or Alt+Q), place on the Quick Access Bar, put on your own tab, assign a key, or record in a macro.'],
       ['Ribbon or classic menus', 'Use the ribbon tabs, or the classic menu bar laid out like the desktop web editors you may know (View ▸ Menus). Both reach the same commands; you can show either or both.'],
       ['Design, Split, Code, Preview', 'Edit visually in Design view, write markup in Code view, or do both in Split view. Preview runs the page\'s scripts in a sandbox. The Quick Tag Selector above the page shows where you are; its drop-downs edit, wrap or remove tags.'],
       ['Sites', 'Open a whole folder (File ▸ Open Site), a ZIP, a template, a WordPress export or a Weebly site archive. The Folder List shows every file; renaming or moving one fixes the links to it. Site ▸ Reports checks links, pictures and pages.'],

@@ -1,4 +1,4 @@
-/* QuillLoom application styles (original design). */
+/* Anne's Loom application styles (original design). */
 :root {
   --bg: #eef1f5; --surface: #ffffff; --surface2: #f6f7f9; --text: #1d2330; --muted: #5b6475; --border: #d6dbe3;
   --accent: #2e6b5e; --accent-2: #e0b84f; --accent-soft: #dcefe9; --on: #bfe2d8; --danger: #b3261e;
@@ -534,7 +534,7 @@ body.ql-fullscreen .ql-titlebar, body.ql-fullscreen .ql-tabs, body.ql-fullscreen
 .ql-pp-view { --sc-bg: #8a8f98; }
 /* ===== end Scroll cues ===== */
 
-/* ===== QuillLoom: workspace, thumbnails, slide canvas, views ===== */
+/* ===== Anne's Loom: workspace, thumbnails, slide canvas, views ===== */
 .ql-qat-below { display: none; background: var(--surface2); border-bottom: 1px solid var(--border); padding: 0 4px; min-height: 34px; align-items: center; flex: none; }
 .ql-qat-below-ribbon .ql-qat-below { display: flex; }
 .ql-present { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.35); color: #fff; display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 18px; margin: 0 4px; cursor: pointer; }

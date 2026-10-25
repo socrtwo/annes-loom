@@ -136,7 +136,7 @@ async function editProfile(app: App, existing?: PublishProfile): Promise<Publish
       zip: 'Downloads the files as a ZIP archive that you can upload with your host\'s file manager.',
       folder: isDesktop() ? 'Copies the files into another folder on this computer (for example a synced or served folder).' : 'Copies the files into a folder on this device. Needs a browser with folder access (Chromium-based); the folder is chosen again each session.',
       webdav: 'Uploads with WebDAV (MKCOL and PUT). ' + (isDesktop() ? '' : 'From the web app the server must allow this app\'s origin (CORS); many hosting control panels do not.'),
-      ftp: isDesktop() ? 'Uploads over FTP or FTPS from the desktop app.' : 'FTP needs the QuillLoom desktop app: web pages cannot open FTP connections.',
+      ftp: isDesktop() ? 'Uploads over FTP or FTPS from the desktop app.' : 'FTP needs the Anne\'s Loom desktop app: web pages cannot open FTP connections.',
       sftp: 'SFTP (SSH file transfer) is not supported. Most hosts also accept FTPS: choose FTP and turn on FTPS.',
       github: 'Commits each file to a GitHub repository with the REST API; turn on GitHub Pages for the branch and folder in the repository settings. Works from the browser.',
       wordpress: 'Creates or updates WordPress pages or posts from your pages through the WordPress REST API, with an application password.',

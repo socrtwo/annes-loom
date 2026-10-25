@@ -67,8 +67,8 @@ export async function checkUrl(url: string, timeoutMs = 10000): Promise<string> 
   if (!/^https?:/i.test(url)) return 'Not checked (not a web address)';
   if (desktopHttp && /^https:/i.test(url)) {
     try {
-      let r = await desktopHttp({ url, method: 'HEAD', headers: { 'User-Agent': 'QuillLoom link checker' } });
-      if (r.status === 405 || r.status === 501 || r.status === 403) r = await desktopHttp({ url, method: 'GET', headers: { 'User-Agent': 'QuillLoom link checker' } });
+      let r = await desktopHttp({ url, method: 'HEAD', headers: { 'User-Agent': 'Anne\'s Loom link checker' } });
+      if (r.status === 405 || r.status === 501 || r.status === 403) r = await desktopHttp({ url, method: 'GET', headers: { 'User-Agent': 'Anne\'s Loom link checker' } });
       return r.status > 0 && r.status < 400 ? `OK (${r.status})` : String(r.status || 'Unreachable');
     } catch { return 'Unreachable'; }
   }

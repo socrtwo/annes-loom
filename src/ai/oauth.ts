@@ -1,6 +1,6 @@
 /**
  * OpenRouter sign-in with OAuth PKCE: the user signs in on openrouter.ai in the default
- * browser and OpenRouter hands back a code that QuillLoom exchanges for an API key. No
+ * browser and OpenRouter hands back a code that Anne's Loom exchanges for an API key. No
  * copying or pasting.
  *
  * OpenRouter accepts https callbacks and http://localhost / 127.0.0.1 on any port.
@@ -13,7 +13,7 @@
  *
  * Each sign-in puts a random nonce in the callback address (a path on the loopback, a query
  * parameter in the browser). Redirects without it are ignored: another app on the device could
- * otherwise end the sign-in with a bogus code, or hand QuillLoom a code for an account of its own.
+ * otherwise end the sign-in with a bogus code, or hand Anne's Loom a code for an account of its own.
  */
 import { isNative, openExternal, startOAuthLoopback, stopOAuthLoopback, onOAuthCallback } from '../platform/native';
 
@@ -90,7 +90,7 @@ export async function startOpenRouterSignIn(timeoutMs = 10 * 60 * 1000): Promise
   let callback: string;
   if (isNative()) {
     const path = `/callback/${nonce}`;
-    const port = await startOAuthLoopback(timeoutMs, '<!doctype html><meta name="viewport" content="width=device-width"><body style="font:16px system-ui;padding:24px;text-align:center"><h2>Signed in</h2><p>QuillLoom received your OpenRouter key. You can close this tab and return to QuillLoom.</p></body>', path);
+    const port = await startOAuthLoopback(timeoutMs, '<!doctype html><meta name="viewport" content="width=device-width"><body style="font:16px system-ui;padding:24px;text-align:center"><h2>Signed in</h2><p>Anne\'s Loom received your OpenRouter key. You can close this tab and return to Anne\'s Loom.</p></body>', path);
     callback = `http://127.0.0.1:${port}${path}`;
     const h = await onOAuthCallback((url) => {
       if (!isOurCallback(url, path)) return;
@@ -101,7 +101,7 @@ export async function startOpenRouterSignIn(timeoutMs = 10 * 60 * 1000): Promise
     });
     cleanup.push(() => h.remove(), () => void stopOAuthLoopback());
   } else {
-    // The callback page is QuillLoom itself in a new tab; it finishes the exchange and broadcasts.
+    // The callback page is Anne's Loom itself in a new tab; it finishes the exchange and broadcasts.
     const session = JSON.stringify({ verifier, nonce });
     sessionStorage.setItem(SESSION_KEY, session);
     try { localStorage.setItem(SESSION_KEY, session); } catch { /* storage off */ }

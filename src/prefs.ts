@@ -52,7 +52,7 @@ export interface Prefs {
   defaultView: 'design' | 'split' | 'code' | 'preview';
   /** Split view: code above design, or side by side. */
   splitVertical: boolean;
-  /** The menu system: the Quill ribbon, a classic menu bar, or both. */
+  /** The menu system: the Anne's Office ribbon, a classic menu bar, or both. */
   menuStyle: 'ribbon' | 'classic' | 'both';
   /** Which classic editor's menu layout the classic menu bar follows. */
   classicMenus: 'expression' | 'frontpage' | 'dreamweaver' | 'composer' | 'union';
@@ -90,7 +90,7 @@ export interface Prefs {
   formatOnSave: boolean;
   /** Keep the Design view's caret visible while typing in Split view. */
   syncScroll: boolean;
-  /** Ask before overwriting files changed outside QuillLoom. */
+  /** Ask before overwriting files changed outside Anne's Loom. */
   warnExternal: boolean;
   /** Publishing: only changed files. */
   publishChangedOnly: boolean;

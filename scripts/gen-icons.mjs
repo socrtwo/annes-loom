@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Renders the QuillLoom icon (resources/icon.svg) to every size the platforms need:
+// Renders the Anne's Loom icon (resources/icon.svg) to every size the platforms need:
 //   resources/icon-1024.png                desktop installers (electron-builder derives .ico and .icns from it)
 //   resources/icon-512.png                 desktop window icon (scripts/prepare-desktop.mjs copies it)
 //   public/icons/icon-192.png, icon-512.png

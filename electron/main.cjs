@@ -1,4 +1,4 @@
-// QuillLoom desktop app (Windows, macOS, Linux, Raspberry Pi OS): Electron main process.
+// Anne's Loom desktop app (Windows, macOS, Linux, Raspberry Pi OS): Electron main process.
 //
 // The web build (dist/) is served from the privileged app:// scheme so module workers, fetch and
 // IndexedDB behave as on the web. The renderer is sandboxed with context isolation and no Node;
@@ -21,9 +21,9 @@ const SCHEME = 'app';
 const ORIGIN = `${SCHEME}://quillloom`;
 const PREVIEW = 'preview';
 const PREVIEW_ORIGIN = `${PREVIEW}://p`;
-/** Web pages, style sheets, scripts, templates and site archives QuillLoom opens. */
+/** Web pages, style sheets, scripts, templates and site archives Anne's Loom opens. */
 const OPENABLE = ['html', 'htm', 'xhtml', 'shtml', 'php', 'asp', 'aspx', 'jsp', 'dwt', 'lbi', 'css', 'scss', 'less', 'js', 'mjs', 'json', 'xml', 'svg', 'txt', 'md', 'markdown', 'zip', 'qlsite', 'mht', 'mhtml', 'tpl', 'twig', 'hbs', 'liquid'];
-/** Documents the app can import or hand to a sibling Quill app (never programs or scripts). */
+/** Documents the app can import or hand to a sibling Anne's Office app (never programs or scripts). */
 const DOCUMENTS = ['docx', 'docm', 'dotx', 'doc', 'odt', 'fodt', 'rtf', 'pdf', 'xlsx', 'ods', 'csv', 'pptx', 'odp'];
 
 protocol.registerSchemesAsPrivileged([
@@ -60,7 +60,7 @@ function grant(p) {
 function grantedPath(uri) {
   if (typeof uri !== 'string' || !uri.startsWith('file:')) throw new Error('Not a file address');
   const p = path.resolve(fileURLToPath(uri));
-  if (!grants.has(p)) throw new Error('QuillLoom has no permission for this file; open it again.');
+  if (!grants.has(p)) throw new Error('Anne\'s Loom has no permission for this file; open it again.');
   return p;
 }
 const MIME = {
@@ -132,7 +132,7 @@ function grantedRoot(root) {
   if (grantedRoots.has(r)) return r;
   // The renderer may hold the path as picked (before realpath): accept it when it resolves to a grant.
   try { const real = fs.realpathSync(r); if (grantedRoots.has(real)) return real; } catch { /* missing */ }
-  throw new Error('QuillLoom has no permission for this folder; open it again.');
+  throw new Error('Anne\'s Loom has no permission for this folder; open it again.');
 }
 /** Site-relative posix path → its segments, refusing absolute paths, '..', and names Windows cannot hold. */
 function siteSegments(rel) {
@@ -142,7 +142,7 @@ function siteSegments(rel) {
   if (!segs.length) throw new Error('Invalid file path');
   for (const seg of segs) {
     if (seg === '..') throw new Error('Paths may not leave the site folder');
-    if (NO_WRITE.has(seg)) throw new Error(`QuillLoom does not write into ${seg} folders`);
+    if (NO_WRITE.has(seg)) throw new Error(`Anne's Loom does not write into ${seg} folders`);
     if (process.platform === 'win32' && (/[<>:"|?*\x00-\x1f]/.test(seg) || /[. ]$/.test(seg))) throw new Error(`"${seg}" is not a valid file name on Windows`);
   }
   return segs;
@@ -282,7 +282,7 @@ function registerIpc() {
         { name: 'Web pages', extensions: ['html', 'htm', 'xhtml', 'shtml', 'php', 'asp', 'aspx', 'jsp'] },
         { name: 'Templates and library items', extensions: ['dwt', 'lbi', 'tpl', 'twig', 'hbs', 'liquid'] },
         { name: 'Style sheets and scripts', extensions: ['css', 'scss', 'less', 'js', 'mjs'] },
-        { name: 'Site archives (ZIP, QuillLoom site, web archive)', extensions: ['zip', 'qlsite', 'mht', 'mhtml'] },
+        { name: 'Site archives (ZIP, Anne\'s Loom site, web archive)', extensions: ['zip', 'qlsite', 'mht', 'mhtml'] },
         { name: 'Documents', extensions: DOCUMENTS },
         { name: 'All files', extensions: ['*'] },
       ],
@@ -348,7 +348,7 @@ function registerIpc() {
   });
   handle('stopLoopback', async () => stopLoop());
   handle('openExternal', async ({ url }) => { if (safeUrl(url)) await shell.openExternal(url); });
-  // Hand a document to the program registered for its type (QuillPen, QuillPost or QuillLoom when installed).
+  // Hand a document to the program registered for its type (Anne's Pen, Anne's Post or Anne's Loom when installed).
   handle('openWith', async ({ name, data }) => {
     const base = path.basename(String(name || 'document')).replace(/[\\/:*?"<>|]/g, '_');
     const ext = path.extname(base).slice(1).toLowerCase();
@@ -489,7 +489,7 @@ function createWindow() {
     height: 860,
     minWidth: 360,
     minHeight: 480,
-    title: 'QuillLoom',
+    title: 'Anne\'s Loom',
     backgroundColor: '#ffffff',
     autoHideMenuBar: process.platform !== 'darwin',
     icon: path.join(__dirname, 'icon.png'),
@@ -499,7 +499,7 @@ function createWindow() {
       sandbox: true,
       nodeIntegration: false,
       webSecurity: true,
-      spellcheck: false, // QuillLoom has its own spelling checker
+      spellcheck: false, // Anne's Loom has its own spelling checker
     },
   });
   // Links (in the app and in page previews) open in the system browser; the app opens no windows of
@@ -518,7 +518,7 @@ function createWindow() {
   win.webContents.on('will-navigate', (e, url) => { if (!url.startsWith(ORIGIN)) { e.preventDefault(); if (safeUrl(url)) void shell.openExternal(url); } });
   // The page asks before unloading with unsaved pages: confirm here, as the browser would.
   win.webContents.on('will-prevent-unload', (e) => {
-    const choice = dialog.showMessageBoxSync(win, { type: 'question', buttons: ['Close without saving', 'Cancel'], defaultId: 1, cancelId: 1, title: 'Unsaved changes', message: 'Some pages have unsaved changes. Close QuillLoom anyway?' });
+    const choice = dialog.showMessageBoxSync(win, { type: 'question', buttons: ['Close without saving', 'Cancel'], defaultId: 1, cancelId: 1, title: 'Unsaved changes', message: 'Some pages have unsaved changes. Close Anne\'s Loom anyway?' });
     if (choice === 0) e.preventDefault();
   });
   // A reload or navigation drops the page's listeners until it registers them again.

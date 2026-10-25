@@ -50,7 +50,7 @@ export async function ensureAiReady(app: App, reason = 'This command needs an AI
   const ids = aiRecipients().filter((id) => cloudId(id) && !aiSettings().privacyAck.includes(id));
   if (!ids.length) return true;
   const free = ids.some((id) => providerById(id)?.free === 'free');
-  const ok = await confirmDialog('Sending Page Text and Code to an AI Service', `AI commands send only the page text and code they need (the selection, the page, or for site-wide commands the pages involved) directly from this device to ${names(ids)}. QuillLoom has no server and keeps no copy. The service's terms and privacy policy apply${free ? ', and free tiers may use what you send to improve their models' : ''}. For confidential or unpublished sites, use the on-device model. Continue?`, 'Continue', 'Cancel');
+  const ok = await confirmDialog('Sending Page Text and Code to an AI Service', `AI commands send only the page text and code they need (the selection, the page, or for site-wide commands the pages involved) directly from this device to ${names(ids)}. Anne's Loom has no server and keeps no copy. The service's terms and privacy policy apply${free ? ', and free tiers may use what you send to improve their models' : ''}. For confidential or unpublished sites, use the on-device model. Continue?`, 'Continue', 'Cancel');
   if (ok) saveAiSettings((x) => { for (const id of ids) if (!x.privacyAck.includes(id)) x.privacyAck.push(id); });
   return ok;
 }
@@ -1204,7 +1204,7 @@ def([
     run: async () => {
       const p = providerById(aiSettings().active || '');
       await openDialog({ title: 'AI & Privacy', ok: 'Close', cancel: false, fields: [{ key: 'i', type: 'info', html: [
-        '<p><b>QuillLoom has no server.</b> AI requests go directly from this device to the provider you choose, using your own key. Nothing is sent until you run an AI command.</p>',
+        '<p><b>Anne\'s Loom has no server.</b> AI requests go directly from this device to the provider you choose, using your own key. Nothing is sent until you run an AI command.</p>',
         `<p><b>Active provider:</b> ${p ? esc(p.name) : 'none'}${p && (p.kind === 'local' || p.kind === 'builtin') ? ' — runs on this device; your site does not leave it.' : p ? ' — the page text and code a command needs (the selection, the page, or the pages involved in a site-wide command) are sent to this service; its terms apply.' : ''}</p>`,
         activeEnsemble() ? `<p><b>Several AIs are on.</b> Each AI command sends the same text to every one of these services: ${esc(names(aiRecipients()))}.</p>` : '',
         '<p><b>Pictures</b> are sent only by Generate from Sketch (the picture you choose) and Alt Text (the site\'s pictures that need alt text, and only when the AI can read pictures).</p>',

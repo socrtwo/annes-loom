@@ -1,6 +1,6 @@
 # Architecture
 
-QuillLoom is a TypeScript web application (Vite). The desktop release wraps the same build in Electron. It reuses the Quill suite's shell (ribbon, Quick Access Bar, backstage, dialogs, customization, AI layer) from QuillStage and adds a web-site editing core.
+Anne's Loom is a TypeScript web application (Vite). The desktop release wraps the same build in Electron. It reuses the Anne's Office suite's shell (ribbon, Quick Access Bar, backstage, dialogs, customization, AI layer) from Anne's Stage and adds a web-site editing core.
 
 ```
 src/

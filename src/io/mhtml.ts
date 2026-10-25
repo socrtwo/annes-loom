@@ -216,7 +216,7 @@ export function buildMhtml(site: Site, pagePath: string): string {
   const title = getTitle(src) || baseName(pagePath);
   const enc = new TextEncoder();
   const out: string[] = [
-    'From: <Saved by QuillLoom>',
+    'From: <Saved by Anne\'s Loom>',
     `Subject: ${title.replace(/[^\x20-\x7e]/g, '?')}`,
     `Date: ${new Date().toUTCString()}`,
     'MIME-Version: 1.0',

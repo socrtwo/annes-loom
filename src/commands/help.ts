@@ -178,7 +178,7 @@ def([
   {
     id: 'help.help', label: 'Help', icon: 'help', tab: 'Help', group: 'Help', keys: ['F1'], edits: false, noRecord: true,
     run: async () => {
-      await openDialog({ title: 'QuillLoom Help', wide: true, ok: 'Close', cancel: false, fields: [{ key: 'i', type: 'info', html: [
+      await openDialog({ title: 'Anne\'s Loom Help', wide: true, ok: 'Close', cancel: false, fields: [{ key: 'i', type: 'info', html: [
         '<p><b>Every feature is a command.</b> Search for any of them with the magnifier in the title bar (Alt+Q), put them on the Quick Access Bar, your own tabs or keyboard shortcuts, or record them in macros.</p>',
         '<p><b>Sites:</b> File ▸ Open Site edits a folder in place (in the desktop app and Chromium-based browsers; other browsers read the folder and save the site as a .qlsite or ZIP file). The Folder List shows every file; renaming or moving a file updates the links to it.</p>',
         '<p><b>Views:</b> Design edits the page visually, Code edits its markup, Split shows both, and Preview runs the page\'s scripts in a sandbox. Preview in Browser (F12) opens the page in a new window.</p>',
@@ -198,7 +198,7 @@ def([
   {
     id: 'help.whatsNew', label: "What's New", icon: 'new_releases', tab: 'Help', group: 'Help', edits: false, noRecord: true,
     run: async () => {
-      await openDialog({ title: `What's New in QuillLoom ${VERSION}`, ok: 'Close', cancel: false, fields: [{ key: 'i', type: 'info', html: [
+      await openDialog({ title: `What's New in Anne's Loom ${VERSION}`, ok: 'Close', cancel: false, fields: [{ key: 'i', type: 'info', html: [
         '<ul>',
         '<li>Design, Split, Code and Preview views over the page source, which stays exactly as written outside the parts you change.</li>',
         '<li>Whole sites: folders, ZIP archives and .qlsite files, with link fix-up when files move, reports and publishing.</li>',
@@ -216,9 +216,9 @@ def([
     run: () => showNotices(),
   },
   {
-    id: 'help.about', label: 'About QuillLoom', icon: 'info', tab: 'Help', group: 'Help', edits: false, noRecord: true,
+    id: 'help.about', label: 'About Anne\'s Loom', icon: 'info', tab: 'Help', group: 'Help', edits: false, noRecord: true,
     run: async () => {
-      await openDialog({ title: 'About QuillLoom', ok: 'Close', cancel: false, fields: [{ key: 'i', type: 'info', html: `<p><b>QuillLoom ${VERSION}</b> — an original, open-source web site editor with visual and code editing. Part of the Quill suite (QuillPen, QuillGrid, QuillStage, QuillPost).</p><p>${commandCount()} commands, every one placeable on the Quick Access Bar, a tab, a shortcut or a macro.</p><p>MIT License. Copyright © 2026 Paul D Pruitt. Not affiliated with Microsoft, Adobe, Mozilla, WordPress, Weebly or Wix; product names are used only to describe compatibility and the origin of features.</p><p><a href="${REPO}" target="_blank" rel="noopener">${REPO}</a></p>` }],
+      await openDialog({ title: 'About Anne\'s Loom', ok: 'Close', cancel: false, fields: [{ key: 'i', type: 'info', html: `<p><b>Anne's Loom ${VERSION}</b> — an original, open-source web site editor with visual and code editing. Part of the Anne's Office suite (Anne's Pen, Anne's Grid, Anne's Stage, Anne's Post).</p><p>${commandCount()} commands, every one placeable on the Quick Access Bar, a tab, a shortcut or a macro.</p><p>MIT License. Copyright © 2026 Paul D Pruitt. Not affiliated with Microsoft, Adobe, Mozilla, WordPress, Weebly or Wix; product names are used only to describe compatibility and the origin of features.</p><p><a href="${REPO}" target="_blank" rel="noopener">${REPO}</a></p>` }],
         buttons: [{ label: 'Third-Party Notices', onClick: (_v, ctl) => { ctl.close(); void showNotices(); } }] });
     },
   },

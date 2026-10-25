@@ -438,7 +438,7 @@ function optionExt(path: string, o: CodeExtrasOptions): Extension {
   return [o.hiddenChars ? highlightWhitespace() : [], o.highlightInvalid && (isPagePath(path) || /\.(xml|svg|dwt|lbi)$/i.test(path)) ? invalidPlugin : []];
 }
 
-/** Adds QuillLoom's Code view extensions to a tab's editor once; later calls update the options. */
+/** Adds Anne's Loom's Code view extensions to a tab's editor once; later calls update the options. */
 export function ensureCodeExtras(tab: PageTab, o: CodeExtrasOptions): void {
   const code = tab.ui?.code;
   if (!code) return;

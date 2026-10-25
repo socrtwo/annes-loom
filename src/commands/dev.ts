@@ -140,7 +140,7 @@ def([
       const r = await openDialog({ title: m ? `Edit Macro: ${m.name}` : 'New Macro', wide: true, fields: [
         { key: 'name', label: 'Name', type: 'text', value: m?.name || `Macro${ms.length + 1}` },
         { key: 'desc', label: 'Description', type: 'text', value: m?.description || '' },
-        { key: 'steps', label: 'Steps', type: 'textarea', rows: 14, value: macroText(m), help: 'Find command ids in Help ▸ Command Reference or the Customize dialogs. Macros run QuillLoom commands only; they cannot run code or reach the network on their own.' },
+        { key: 'steps', label: 'Steps', type: 'textarea', rows: 14, value: macroText(m), help: 'Find command ids in Help ▸ Command Reference or the Customize dialogs. Macros run Anne\'s Loom commands only; they cannot run code or reach the network on their own.' },
       ], validate: (v) => (!String(v.name || '').trim() ? 'Give the macro a name.' : parseMacroText(String(v.steps)).error) });
       if (!r) return;
       const { steps } = parseMacroText(String(r.steps));

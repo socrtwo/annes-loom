@@ -239,7 +239,7 @@ def(cmds('Web Components', 'FrontPage (Web Components), Expression Web, modern b
         title: 'Include Page', help: 'Shows another page’s body content here, so a shared header or footer is edited in one place.',
         fields: [
           { key: 'path', label: 'Page', type: 'list', rows: 8, options: pages, value: pages.find((p) => /header|footer|nav|menu|include/i.test(p)) || pages[0] },
-          { key: 'how', label: 'Include', type: 'radio', value: 'copy', options: [{ value: 'copy', label: 'A copy of the content, updated by QuillLoom (works on any host)' }, { value: 'ssi', label: 'A server-side include (the web server inserts it; needs SSI, usually .shtml pages)' }] },
+          { key: 'how', label: 'Include', type: 'radio', value: 'copy', options: [{ value: 'copy', label: 'A copy of the content, updated by Anne\'s Loom (works on any host)' }, { value: 'ssi', label: 'A server-side include (the web server inserts it; needs SSI, usually .shtml pages)' }] },
         ],
       });
       if (!v?.path) return;

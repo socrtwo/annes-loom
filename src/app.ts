@@ -1,5 +1,5 @@
 /**
- * QuillLoom application core: the open site, page tabs, command execution, macro recording, history and autosave.
+ * Anne's Loom application core: the open site, page tabs, command execution, macro recording, history and autosave.
  *
  * One site is open at a time (as in desktop site editors); any number of its files are open in tabs.
  * The site's files are the document of record. A tab mirrors one file's text, keeps its undo history,
@@ -176,7 +176,7 @@ export class App {
     this.ui.tabsChanged();
     tab.ui.layout();
     this.refresh();
-    document.title = `${tab.displayName}${tab.dirty ? ' •' : ''} – ${this.site.name} – QuillLoom`;
+    document.title = `${tab.displayName}${tab.dirty ? ' •' : ''} – ${this.site.name} – Anne's Loom`;
   }
 
   closeTab(tab: PageTab, silent = false): void {
@@ -206,7 +206,7 @@ export class App {
     if (origin !== 'history') tab.history.push(src, label);
     if (!tab.dirty) { tab.dirty = true; this.ui.tabsChanged(); }
     tab.ui.sourceChanged(origin);
-    document.title = `${tab.displayName} • – ${this.site.name} – QuillLoom`;
+    document.title = `${tab.displayName} • – ${this.site.name} – Anne's Loom`;
     this.refresh();
   }
 

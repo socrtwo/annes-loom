@@ -12,7 +12,7 @@
  * and the commands: attach, detach, update, manage and check regions, make templates, library items.
  *
  * Limitations: repeating regions cannot be nested in each other, and optional and repeating regions are
- * evaluated by QuillLoom (other editors that only know the "begin" dialect ignore those markers).
+ * evaluated by Anne's Loom (other editors that only know the "begin" dialect ignore those markers).
  */
 import { def } from './registry';
 import type { App } from '../app';
@@ -252,7 +252,7 @@ export function checkTemplateSyntax(src: string, isTemplate: boolean): SyntaxIss
     } else if (/^(Template|Instance)BeginRepeat/i.test(tok)) {
       const name = m[4] ?? '';
       if (stack.some((s) => s.kind === 'edit')) issues.push({ line, level: 'error', message: `Repeating region "${name}" starts inside an editable region.` });
-      if (inRepeat) issues.push({ line, level: 'warning', message: `Repeating region "${name}" is inside another repeating region; QuillLoom does not repeat nested regions.` });
+      if (inRepeat) issues.push({ line, level: 'warning', message: `Repeating region "${name}" is inside another repeating region; Anne's Loom does not repeat nested regions.` });
       if (repeatNames.has(name)) issues.push({ line, level: 'error', message: `Two repeating regions are named "${name}".` });
       repeatNames.add(name);
       stack.push({ kind: 'repeat', name, line });

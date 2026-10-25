@@ -60,7 +60,7 @@ export function exportJekyllFiles(site: Site): Map<string, string | Uint8Array> 
     out.set(p.replace(/\.(htm|shtml)$/i, '.html'), `---\nlayout: default\ntitle: ${yamlStr(pageTitleOf(site, p, src))}\n---\n${content}\n`);
   }
   for (const a of assetFiles(site)) { const f = site.get(a)!; out.set(a.startsWith('_') ? a.slice(1) : a, f.data ?? f.text ?? ''); }
-  out.set('README.md', `# ${site.name}\n\nA Jekyll site exported from QuillLoom.\n\n    bundle exec jekyll serve\n\nThe layout in _layouts/default.html comes from the site's page template; each page has front matter and its main content.\n`);
+  out.set('README.md', `# ${site.name}\n\nA Jekyll site exported from Anne's Loom.\n\n    bundle exec jekyll serve\n\nThe layout in _layouts/default.html comes from the site's page template; each page has front matter and its main content.\n`);
   return out;
 }
 
@@ -80,7 +80,7 @@ export function exportHugoFiles(site: Site): Map<string, string | Uint8Array> {
     out.set(dest, `---\ntitle: ${yamlStr(pageTitleOf(site, p, src))}\n---\n${content}\n`);
   }
   for (const a of assetFiles(site)) { const f = site.get(a)!; out.set(joinPath('static', a), f.data ?? f.text ?? ''); }
-  out.set('README.md', `# ${site.name}\n\nA Hugo site exported from QuillLoom.\n\n    hugo server\n\nlayouts/_default/baseof.html comes from the site's page template; content/ holds each page's main content as HTML with front matter; static/ holds pictures, style sheets and scripts.\n`);
+  out.set('README.md', `# ${site.name}\n\nA Hugo site exported from Anne's Loom.\n\n    hugo server\n\nlayouts/_default/baseof.html comes from the site's page template; content/ holds each page's main content as HTML with front matter; static/ holds pictures, style sheets and scripts.\n`);
   void esc; void getTitle;
   return out;
 }

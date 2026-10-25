@@ -806,7 +806,7 @@ def([
   // --- menus, ribbon, bars
   { id: 'view.quickTagSelector', label: 'Quick Tag Selector', icon: 'code_blocks', tab: 'View', group: 'Menus', kind: 'toggle', noRecord: true, origin: 'Expression Web', tip: 'The bar of tags above the page', isActive: () => !flags.hideTagBar, run: () => { flags.hideTagBar = !flags.hideTagBar; saveFlags(); applyRootClasses(); } },
   { id: 'view.statusBar', label: 'Status Bar', icon: 'call_to_action', tab: 'View', group: 'Menus', kind: 'toggle', noRecord: true, origin: 'FrontPage', isActive: () => !flags.hideStatus, run: () => { flags.hideStatus = !flags.hideStatus; saveFlags(); applyRootClasses(); } },
-  { id: 'view.menuStyle', label: 'Menus…', icon: 'menu_open', tab: 'View', group: 'Menus', noRecord: true, origin: 'Quill suite', tip: 'Ribbon, classic menu bar, or both', run: (app, arg) => menuStyle(app, arg) },
+  { id: 'view.menuStyle', label: 'Menus…', icon: 'menu_open', tab: 'View', group: 'Menus', noRecord: true, origin: 'Anne\'s Office suite', tip: 'Ribbon, classic menu bar, or both', run: (app, arg) => menuStyle(app, arg) },
   {
     id: 'view.classicLayout', label: 'Classic Menu Layout', icon: 'menu', tab: 'View', group: 'Menus', kind: 'menu', noRecord: true, origin: 'Expression Web, FrontPage, Dreamweaver, Composer',
     menu: (app) => Object.entries(CLASSIC_LAYOUT_NAMES).map(([k, label]) => ({ id: 'view.classicLayout', arg: k, label, checked: app.prefs.classicMenus === k })),
@@ -836,7 +836,7 @@ def([
   { id: 'view.taskPane', label: 'Task Pane', icon: 'right_panel_open', tab: 'View', group: 'Window', kind: 'toggle', noRecord: true, origin: 'FrontPage 2003', isActive: (app) => !!app.ui.panes.right, run: (app) => taskPane(app) },
 
   // --- Quick Access Bar
-  { id: 'view.qatAddAll', label: 'Add All Quick Access Choices (A–Z)', icon: 'sort_by_alpha', tab: 'View', group: 'Quick Access Bar', noRecord: true, origin: 'Quill suite', run: (app) => { app.prefs.qat = addAllQatChoices(app.prefs.qat, (id) => getCommand(id)?.label); app.prefs.qatHidden = false; app.savePrefs(); app.ui.applyPrefs(); app.ui.renderQat(); toast('All Quick Access choices added'); } },
+  { id: 'view.qatAddAll', label: 'Add All Quick Access Choices (A–Z)', icon: 'sort_by_alpha', tab: 'View', group: 'Quick Access Bar', noRecord: true, origin: 'Anne\'s Office suite', run: (app) => { app.prefs.qat = addAllQatChoices(app.prefs.qat, (id) => getCommand(id)?.label); app.prefs.qatHidden = false; app.savePrefs(); app.ui.applyPrefs(); app.ui.renderQat(); toast('All Quick Access choices added'); } },
   {
     id: 'view.qatPosition', label: 'Quick Access Bar Position', icon: 'swap_vert', tab: 'View', group: 'Quick Access Bar', kind: 'menu', noRecord: true, origin: 'Microsoft Office',
     menu: (app) => (['top', 'below', 'bottom'] as const).map((p) => ({ id: 'view.qatPosition', arg: p, label: p === 'top' ? 'Show Above the Ribbon' : p === 'below' ? 'Show Below the Ribbon' : 'Show at the Bottom (near keyboard)', checked: app.prefs.qatPosition === p })),

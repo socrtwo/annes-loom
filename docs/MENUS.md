@@ -1,8 +1,8 @@
 # Menus and command sources
 
-QuillLoom has two menu systems over one command library:
+Anne's Loom has two menu systems over one command library:
 
-- **The Quill ribbon** (Home, Insert, Design, Layout, Site, CMS & Builders, Check, Code, View, AI, Developer, Help, plus contextual Table, Picture, Form and Template tabs), the same shell as QuillPen, QuillGrid and QuillStage, with the Quick Access Bar, command search (Alt+Q), Customize Tabs and Customize Keyboard.
+- **The Anne's Office ribbon** (Home, Insert, Design, Layout, Site, CMS & Builders, Check, Code, View, AI, Developer, Help, plus contextual Table, Picture, Form and Template tabs), the same shell as Anne's Pen, Anne's Grid and Anne's Stage, with the Quick Access Bar, command search (Alt+Q), Customize Tabs and Customize Keyboard.
 - **A classic menu bar** laid out like the desktop web editors people learned. View ▸ Menus switches between ribbon, menu bar or both; View ▸ Classic Menu Layout picks the editor whose layout the bar follows.
 
 Every entry in every layout is a command id in the registry, so a command found in the FrontPage-style *Format* menu is the same command as on the ribbon, can go on the Quick Access Bar, gets a shortcut, and records in macros. `src/ui/classicMenus.ts` holds the layouts; `tests/unit/catalog.test.ts` fails if any layout names a command that does not exist. Help ▸ Menu Map shows where a command lives in each layout.
@@ -21,7 +21,7 @@ Product names are used only to say where an arrangement or idea comes from (nomi
 
 ## Editors surveyed and what they contributed
 
-| Editor | Commands and ideas carried into QuillLoom |
+| Editor | Commands and ideas carried into Anne's Loom |
 |---|---|
 | FrontPage | Folders, Navigation, Hyperlinks, Reports and Tasks views; site reports (summary, unlinked files, slow pages, broken hyperlinks, component errors, review status, assigned to, categories, publish status); shared borders; themes; link bars, page banner, table of contents, include page, scheduled include, substitution, hit counter, photo gallery, interactive buttons, marquee; Auto Thumbnail; Recalculate Hyperlinks; Publish Site; check in/out; frames pages; Data menu; layout tables; Fill Down/Right; table AutoFormat |
 | Expression Web | Design/Split/Code views; Quick Tag Selector and Quick Tag Editor; Tag Properties, CSS Properties, Apply Styles, Manage Styles, Toolbox, Behaviors, Layers, Snippets, Find, Accessibility, Compatibility and CSS Reports panels; Visual Aids and Formatting Marks; ruler, grid and tracing image; page size; style application modes (auto/manual, inline/classes); New Style dialog; attach/detach style sheets; page templates with editable regions (Attach, Detach, Update attached pages, Manage editable regions); Optimize HTML; publishing destinations; SuperPreview-style side-by-side preview |

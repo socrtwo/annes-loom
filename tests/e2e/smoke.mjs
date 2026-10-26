@@ -1,4 +1,4 @@
-// Browser smoke test for QuillLoom. Serves dist/ with `vite preview` (run `npm run build` first) or
+// Browser smoke test for Anne's Loom. Serves dist/ with `vite preview` (run `npm run build` first) or
 // tests BASE_URL, then checks that:
 //   - the app loads with no page errors;
 //   - the ribbon tabs, the classic menu bar and the Folder List render;

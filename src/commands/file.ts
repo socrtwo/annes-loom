@@ -1253,7 +1253,7 @@ async function printPreview(app: App, inWindow = false): Promise<void> {
 
 async function pageSetupDialog(app: App): Promise<boolean> {
   const s = loadSetup();
-  const r = await openDialog({ title: 'Page Setup', help: 'These settings are added as print styles when you print or preview a page from QuillLoom. Headers and footers (title, address, page numbers) are set in the browser\'s print dialog.', fields: [
+  const r = await openDialog({ title: 'Page Setup', help: 'These settings are added as print styles when you print or preview a page from Anne\'s Loom. Headers and footers (title, address, page numbers) are set in the browser\'s print dialog.', fields: [
     { key: 'paper', label: 'Paper size', type: 'select', value: s.paper, half: true, options: [{ value: 'auto', label: 'Printer default' }, { value: 'letter', label: 'Letter (8.5 × 11 in)' }, { value: 'legal', label: 'Legal (8.5 × 14 in)' }, { value: 'a4', label: 'A4 (210 × 297 mm)' }, { value: 'a5', label: 'A5 (148 × 210 mm)' }] },
     { key: 'orientation', label: 'Orientation', type: 'select', value: s.orientation, half: true, options: [{ value: 'portrait', label: 'Portrait' }, { value: 'landscape', label: 'Landscape' }] },
     { key: 'margin', label: 'Margins (CSS: one to four lengths)', type: 'combo', value: s.margin, options: ['0.5in', '0.75in', '1in', '1in 0.75in', '15mm', '20mm', '0'], half: true },

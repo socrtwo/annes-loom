@@ -399,7 +399,7 @@ registerPane({
     el.appendChild(h('div', { class: 'ql-row ql-pane-tools' },
       h('button', { class: 'ql-btn ql-sm', type: 'button', onclick: () => { for (const c of [...clipRing].reverse()) insertAt(app, c.html || esc(c.text).replace(/\n/g, '<br>\n'), c.text); } }, icon('content_paste'), ' Paste All'),
       h('button', { class: 'ql-btn ql-sm', type: 'button', onclick: () => { clipRing.length = 0; el.dataset.sig = ''; this.update!(app, el, {}); } }, icon('clear_all'), ' Clear All')));
-    if (!clipRing.length) { el.appendChild(h('p', { class: 'ql-help ql-pad' }, 'Text and markup you copy or cut in QuillLoom appear here (the last 24). Click one to paste it at the cursor.')); return; }
+    if (!clipRing.length) { el.appendChild(h('p', { class: 'ql-help ql-pad' }, 'Text and markup you copy or cut in Anne\'s Loom appear here (the last 24). Click one to paste it at the cursor.')); return; }
     for (const c of clipRing) {
       const b = h('button', { type: 'button', class: 'ql-clip', title: `Copied ${new Date(c.time).toLocaleTimeString()} from ${c.source}`, style: 'display:block;width:calc(100% - 12px);margin:4px 6px;text-align:left;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:inherit;padding:4px 6px;cursor:pointer;font-size:12px;white-space:pre-wrap;max-height:5.5em;overflow:hidden' },
         (c.text || htmlToText(c.html)).slice(0, 240));

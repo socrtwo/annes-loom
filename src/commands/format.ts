@@ -1271,7 +1271,7 @@ const commands: Command[] = [
       const cur = getDoctype(fileText(app, app.active.path));
       let id = arg;
       if (!id) {
-        const v = await openDialog({ title: 'Document Type', fields: [{ key: 'id', label: 'DOCTYPE', type: 'list', rows: 10, value: cur, options: DOCTYPES.map((d) => ({ value: d.id, label: d.label })) }, ...(cur === 'custom' ? [{ key: 'note', type: 'info' as const, label: 'This page has a DOCTYPE QuillLoom does not list; choosing one replaces it.' }] : [])] });
+        const v = await openDialog({ title: 'Document Type', fields: [{ key: 'id', label: 'DOCTYPE', type: 'list', rows: 10, value: cur, options: DOCTYPES.map((d) => ({ value: d.id, label: d.label })) }, ...(cur === 'custom' ? [{ key: 'note', type: 'info' as const, label: 'This page has a DOCTYPE Anne\'s Loom does not list; choosing one replaces it.' }] : [])] });
         if (!v?.id) return;
         id = v.id;
       }
@@ -1286,7 +1286,7 @@ const commands: Command[] = [
       const cur = getCharset(fileText(app, app.active.path)).toLowerCase() || 'utf-8';
       let cs2 = arg;
       if (!cs2) {
-        const v = await openDialog({ title: 'Encoding', help: 'The character set the page declares. QuillLoom keeps text as Unicode; when you publish, the file is written in UTF-8, so UTF-8 is the right choice unless a server requires another.', fields: [{ key: 'cs', label: 'Character set', type: 'list', rows: 12, value: CHARSETS.some(([c]) => c === cur) ? cur : 'utf-8', options: CHARSETS.map(([value, label]) => ({ value, label })) }] });
+        const v = await openDialog({ title: 'Encoding', help: 'The character set the page declares. Anne\'s Loom keeps text as Unicode; when you publish, the file is written in UTF-8, so UTF-8 is the right choice unless a server requires another.', fields: [{ key: 'cs', label: 'Character set', type: 'list', rows: 12, value: CHARSETS.some(([c]) => c === cur) ? cur : 'utf-8', options: CHARSETS.map(([value, label]) => ({ value, label })) }] });
         if (!v?.cs) return;
         cs2 = v.cs;
       }

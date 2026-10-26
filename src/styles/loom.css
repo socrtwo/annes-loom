@@ -1,4 +1,4 @@
-/* QuillLoom: page editor, site panels and classic menu bar (original design). */
+/* Anne's Loom: page editor, site panels and classic menu bar (original design). */
 .ql-menubar { display: flex; flex: none; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; padding: 0 4px; }
 .ql-menubar-item { background: none; border: 0; padding: 5px 10px; font-size: 13.5px; cursor: pointer; border-radius: 4px; white-space: nowrap; }
 .ql-menubar-item:hover, .ql-menubar-item:focus-visible { background: var(--accent-soft); }

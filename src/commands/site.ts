@@ -636,7 +636,7 @@ def([
     } },
 
   { id: 'site.permissions', label: 'Permissions', icon: 'admin_panel_settings', tab: 'Site', group: 'Settings', noRecord: true, origin: 'FrontPage',
-    run: () => alertDialog('Permissions', 'QuillLoom edits sites as files and has no server of its own, so there are no site accounts or roles to manage here.\nWho may change the published site is decided by the destination: the FTP or WebDAV account, the GitHub repository\'s collaborators, or the WordPress users.\nCheck-out marks and task assignments are kept with the site data and are not enforced.') },
+    run: () => alertDialog('Permissions', 'Anne\'s Loom edits sites as files and has no server of its own, so there are no site accounts or roles to manage here.\nWho may change the published site is decided by the destination: the FTP or WebDAV account, the GitHub repository\'s collaborators, or the WordPress users.\nCheck-out marks and task assignments are kept with the site data and are not enforced.') },
 
   { id: 'site.serverInfo', label: 'Server Information', icon: 'dns', tab: 'Site', group: 'Settings', noRecord: true, origin: 'FrontPage',
     run: (app) => {

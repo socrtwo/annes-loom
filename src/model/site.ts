@@ -205,7 +205,7 @@ export class Site {
   }
 
   static fromJSON(j: any): Site {
-    if (!j || j.format !== SITE_FORMAT || !Array.isArray(j.files)) throw new Error('Not a QuillLoom site file.');
+    if (!j || j.format !== SITE_FORMAT || !Array.isArray(j.files)) throw new Error('Not an Anne\'s Loom site file.');
     const s = new Site(String(j.data?.name || 'Web Site'));
     s.data = { ...s.data, ...(j.data || {}) };
     for (const f of j.files) {

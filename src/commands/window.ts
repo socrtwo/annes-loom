@@ -22,7 +22,7 @@ async function closeAll(app: App, keep?: PageTab): Promise<void> {
   if (keep && app.docs.includes(keep)) app.activate(keep);
 }
 
-const tabsNote = 'QuillLoom shows open files as tabs in one window. Use Split view to see a page\'s design and code together, or Window ▸ New Window for a second window.';
+const tabsNote = 'Anne\'s Loom shows open files as tabs in one window. Use Split view to see a page\'s design and code together, or Window ▸ New Window for a second window.';
 
 def([
   { id: 'window.next', label: 'Next File', icon: 'arrow_forward', tab: 'View', group: 'Window', keys: ['Mod-F6', 'Mod-Alt-PageDown'], noRecord: true, edits: false, origin: 'Expression Web, Dreamweaver', run: (app) => step(app, 1) },
@@ -44,12 +44,12 @@ def([
   },
   {
     id: 'window.newWindow', label: 'New Window', icon: 'open_in_new', tab: 'View', group: 'Window', noRecord: true, edits: false,
-    tip: 'Open another QuillLoom window',
+    tip: 'Open another Anne\'s Loom window',
     run: () => {
       const url = location.href.split('#')[0];
       const w = window.open(url, '_blank');
-      if (!w) { toast('The browser blocked the new window. Allow pop-ups for QuillLoom, or open it in a new tab.'); return; }
-      toast('The new window is a separate copy of QuillLoom with its own site; open a site there with File ▸ Open Site. Unsaved changes are not shared between windows.', { ms: 8000 });
+      if (!w) { toast('The browser blocked the new window. Allow pop-ups for Anne\'s Loom, or open it in a new tab.'); return; }
+      toast('The new window is a separate copy of Anne\'s Loom with its own site; open a site there with File ▸ Open Site. Unsaved changes are not shared between windows.', { ms: 8000 });
     },
   },
   { id: 'window.cascade', label: 'Cascade', icon: 'filter_none', tab: 'View', group: 'Window', noRecord: true, edits: false, origin: 'Dreamweaver', run: () => toast(tabsNote, { ms: 7000 }) },

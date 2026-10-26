@@ -1,8 +1,8 @@
-# QuillLoom
+# Anne's Loom
 
-*Part of the Quill suite: [QuillPen](https://github.com/socrtwo/QuillPen) (documents), [QuillGrid](https://github.com/socrtwo/QuillGrid) (spreadsheets), [QuillPost](https://github.com/socrtwo/QuillPost) (email), [QuillStage](https://github.com/socrtwo/QuillStage) (presentations) and **QuillLoom** (web sites).*
+*Part of the Anne's Office suite: [Anne's Pen](https://github.com/socrtwo/QuillPen) (documents), [Anne's Grid](https://github.com/socrtwo/QuillGrid) (spreadsheets), [Anne's Post](https://github.com/socrtwo/QuillPost) (email), [Anne's Stage](https://github.com/socrtwo/QuillStage) (presentations) and **Anne's Loom** (web sites).*
 
-An original, open-source web site editor in the tradition of the desktop WYSIWYG editors: Design, Split, Code and Preview views over real HTML files, whole-site management, page templates with editable regions, reports, and publishing. It has the Quill suite's ribbon with the Quick Access Bar and an **AI tab**, and, for people who learned the older editors, a **classic menu bar** laid out like Expression Web, FrontPage, Dreamweaver or KompoZer/BlueGriffon (or all of them combined).
+An original, open-source web site editor in the tradition of the desktop WYSIWYG editors: Design, Split, Code and Preview views over real HTML files, whole-site management, page templates with editable regions, reports, and publishing. It has the Anne's Office suite's ribbon with the Quick Access Bar and an **AI tab**, and, for people who learned the older editors, a **classic menu bar** laid out like Expression Web, FrontPage, Dreamweaver or KompoZer/BlueGriffon (or all of them combined).
 
 - **946 commands**: the union of the menu commands of the desktop web editors, plus modern ones. Every command can go on the Quick Access Bar, on your own ribbon tab, on a shortcut, or into a macro, and command search (Alt+Q) finds any of them. See [docs/MENUS.md](docs/MENUS.md).
 - **Ribbon, classic menus, or both** (View ▸ Menus). Classic layouts: Expression Web style, FrontPage style, Dreamweaver style, Composer style, or all editors combined.
@@ -44,7 +44,7 @@ An original, open-source web site editor in the tradition of the desktop WYSIWYG
 
 ## WordPress, Weebly, Wix and other systems
 
-QuillLoom does not run these services. It reads and writes their files, so you can edit a site here and move it back:
+Anne's Loom does not run these services. It reads and writes their files, so you can edit a site here and move it back:
 
 | System | Import | Export |
 |---|---|---|
@@ -100,4 +100,4 @@ See [docs/BUILD.md](docs/BUILD.md), [docs/INSTALL.md](docs/INSTALL.md) and [docs
 
 ## Legal
 
-QuillLoom is an independent, clean-room project under the MIT License. It is not affiliated with, endorsed by, or sponsored by Microsoft, Adobe, Mozilla, Automattic or the WordPress Foundation, Square (Weebly), Wix.com, or any other vendor. Product names appear only to describe file-format compatibility or where a feature's idea comes from (nominative use). The interface, templates, icons and text are original or openly licensed. See [docs/LEGAL.md](docs/LEGAL.md).
+Anne's Loom is an independent, clean-room project under the MIT License. It is not affiliated with, endorsed by, or sponsored by Microsoft, Adobe, Mozilla, Automattic or the WordPress Foundation, Square (Weebly), Wix.com, or any other vendor. Product names appear only to describe file-format compatibility or where a feature's idea comes from (nominative use). The interface, templates, icons and text are original or openly licensed. See [docs/LEGAL.md](docs/LEGAL.md).

@@ -7,7 +7,7 @@
 import { slugify, relativeRef, normalizePath } from '../model/paths';
 import { esc, escAttr, blankPage, headInsert } from '../model/html';
 
-export const WEB_SYSTEM = 'You are a web design and front-end development assistant inside QuillLoom, a web site editor. Write valid, semantic, accessible HTML5 and modern CSS (no frameworks unless asked). Use American English unless told otherwise. Follow the format instructions exactly. Do not add commentary before or after the requested output unless asked.';
+export const WEB_SYSTEM = 'You are a web design and front-end development assistant inside Anne\'s Loom, a web site editor. Write valid, semantic, accessible HTML5 and modern CSS (no frameworks unless asked). Use American English unless told otherwise. Follow the format instructions exactly. Do not add commentary before or after the requested output unless asked.';
 
 // ------------------------------------------------------------------------------------------
 // Code fences

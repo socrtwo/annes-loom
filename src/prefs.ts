@@ -90,7 +90,7 @@ export interface Prefs {
   formatOnSave: boolean;
   /** Keep the Design view's caret visible while typing in Split view. */
   syncScroll: boolean;
-  /** Ask before overwriting files changed outside QuillLoom. */
+  /** Ask before overwriting files changed outside Anne's Loom. */
   warnExternal: boolean;
   /** Publishing: only changed files. */
   publishChangedOnly: boolean;
